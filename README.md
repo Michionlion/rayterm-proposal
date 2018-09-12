@@ -5,7 +5,7 @@ This repository contains the starter for project one in Computer Science 600
 Fall 2018. The main directory of this repository contains the LaTeX source code
 for a project that is designed for use with [GitHub
 Classroom](https://classroom.github.com/). To learn more about the course in
-which these assignments were completed, please visit the [CComputer Science Thesis Fall 2018 Allegheny College GitHub
+which these assignments were completed, please visit the [Computer Science Thesis Fall 2018 Allegheny College GitHub
 Organization](https://github.com/Allegheny-CS-SeniorThesis-2018).
 
 The LaTeX file in this repository is automatically compiled with [Travis
@@ -28,7 +28,7 @@ will see a green &#x2714; in the listing of commits in GitHub. If your
 submission does not meet the requirements, a red &#x2717; will appear instead.
 Your course instructor will reduce a researcher's grade for this assignment if
 the red &#x2717; appears on the last commit in GitHub immediately before the
-assignment's due date on October 31, 2017 at 9:00 pm.
+assignment's due date on October 30, 2018 at 11:59 pm.
 
 Yet, if the green &#x2714; appears on the last commit in your GitHub repository,
 then you satisfied all of the main checks, thereby allowing the course
