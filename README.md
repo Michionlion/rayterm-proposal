@@ -78,9 +78,8 @@ Now, you should have a `.travis.yml` file with a secure access token for your
 GitHub repository for this assignment. Use a text editor to edit this file and
 place the following lines of code at the bottom of it. Please note that you must
 preserve the spacing in the following code segment when you paste it into your
-own `.travis.yml` file. Finally, you should ask Professor Kapfhammer to enable
-Travis-based continuous integration for your GitHub repository. Now, you are
-ready to perform a commit with tags and see your PDF uploaded to GitHub!
+own `.travis.yml` file. Now, you should be ready to perform a commit with tags
+and see your PDF uploaded to GitHub!
 
 ```
   skip_cleanup: true
