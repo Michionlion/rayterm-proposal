@@ -67,7 +67,7 @@ window when you are in the root of your GitHub repository.
 In order for Travis to automatically upload a PDF, called
 `senior_thesis_proposal.pdf`, to GitHub when you tag the commit, you need to
 created your encrypted access token. To complete this task you must type the
-command `travis setup releases --force` in your GitHub repository for this
+command `travis setup releases --com --force` in your GitHub repository for this
 assignment. Then, when prompted, please type your username and password for
 GitHub. When asked to give the filename, you can type
 `_build/senior_thesis_proposal.pdf`. When asked if you want to deploy from a
