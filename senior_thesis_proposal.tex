@@ -2,14 +2,14 @@
 
 \usepackage[T1]{fontenc}
 \usepackage{mathptmx}
-\topmargin 0.0in
+\topmargin -4em
 \setlength{\textwidth} {420pt}
 \setlength{\textheight} {620pt}
 \setlength{\oddsidemargin} {20pt}
 \setlength{\marginparwidth} {72in}
 
 \usepackage{fancyhdr}
-\usepackage{url}
+\usepackage{hyperref}
 \usepackage{graphicx}
 
 % Use elastic spacing around the headers
@@ -42,20 +42,20 @@
 \pagestyle{fancyplain}
 
 \newcommand{\tstamp}{\today}
-\renewcommand{\sectionmark}[1]{\markright{#1}}
-\lhead[\Section \thesection]            {\fancyplain{}{\rightmark}}
-\chead[\fancyplain{}{}]                 {\fancyplain{}{}}
-\rhead[\fancyplain{}{\rightmark}]       {\fancyplain{}{\thepage}}
-\cfoot[\fancyplain{\thepage}{}]         {\fancyplain{\thepage}{}}
 
-\newlength{\myVSpace}% the height of the box
-\setlength{\myVSpace}{1ex}% the default,
-\newcommand\xstrut{\raisebox{-.5\myVSpace}% symmetric behaviour,
-  {\rule{0pt}{\myVSpace}}%
-}
+% \renewcommand{\sectionmark}[1]{\markright{#1}}
+% \lhead[\Section \thesection]            {\fancyplain{}{\rightmark}}
+% \chead[\fancyplain{}{}]                 {\fancyplain{}{}}
+% \rhead[\fancyplain{}{\rightmark}]       {\fancyplain{}{\thepage}}
+% \cfoot[\fancyplain{\thepage}{}]         {\fancyplain{\thepage}{}}
+%
+% \newlength{\myVSpace}% the height of the box
+% \setlength{\myVSpace}{1ex}% the default,
+% \newcommand\xstrut{\raisebox{-.5\myVSpace}% symmetric behaviour,
+%   {\rule{0pt}{\myVSpace}}%
+% }
 
 % leave things with no spacing extra spacing in the final version of the paper
-
 \renewcommand{\baselinestretch}{1.0} % must go before the begin of doc
 
 % suppress the use of indentation for a paragraph
@@ -107,7 +107,7 @@
 % Default "abstract" environment is too small; customize one instead:
 \begin{center}
   \large\bf Abstract
-  \vspace{-1em}  % Reduce space between header and the abstract
+  \vspace{-1em}
 \end{center}
 
 %   ********************************************************************
