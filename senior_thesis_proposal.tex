@@ -62,47 +62,40 @@
 \setlength{\parindent}{0.0in}
 \setlength{\parskip}{0.1in}
 
+
+% custom commands
+\newcommand{\name}{{\sc RayTerm}}
+
+% begin actual document
+
 \begin{document}
 
 % handle widows appropriately
-
 \def\widow#1{\vskip #1\vbadness10000\penalty-200\vskip-#1}
 
-% build the title section
+% make the title section
 
-\makeatletter
-
-\def\maketitle{
-  \thispagestyle{empty}
-  \begin{center}
-    {\Huge \@title\par}
-    {\normalsize \@author\par}
-    \vskip .4in
-  \end{center}
-}
-
-\makeatother
-
-%   ********************************************************************
-%   * Here is the first place where you need to begin customizing:     *
-%   * Enter you name, the title of your proposal, etc., in the places  *
-%   * indicated by the comment "% CHANGE!".                            *
-%   ********************************************************************
-
-\vspace*{-1.1in}
-\title{Title of Your Senior Thesis Proposal}  % CHANGE!
-
-% build the author section, making appropriate CHANGES
-\author{
-  Your Full Name\\  % CHANGE!
-  Department of Computer Science\\
-  Allegheny College \\
-  {\tt youremail@allegheny.edu}  \\  % CHANGE!
-  \url{http://www.cs.allegheny.edu/~yourwebsite/} \\   % CHANGE!
-  \vspace*{.1in} \today \\ \vspace*{.1in}
-}
-
-\maketitle
+\thispagestyle{empty}
+\begin{center}
+  {\Huge
+    \name
+    \par
+  }
+  {\LARGE
+    A Ray-Tracing Rendering Engine for XTerm-like Terminals
+    \par
+  }
+  {\normalsize
+    Saejin Mahlau-Heinert \\
+    Department of Computer Science \\
+    Allegheny College \\
+    {\tt mahlauheinerts@allegheny.edu} \\
+    \url{https://saejinmh.com} \\
+    \vspace*{.1in} \today \\ \vspace*{.1in}
+    \par
+  }
+  \vskip 2em
+\end{center}
 
 % Default "abstract" environment is too small; customize one instead:
 \begin{center}
