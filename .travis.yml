@@ -10,6 +10,6 @@ deploy:
   api_key:
     secure: OA+7OT1cO+3IqqEmXMAnPvtEzG2gUXQS93Y9E82R4SpC7QppyjMqmKbnk6tONx0DpmSPTvIabzwnZXXywkJJCf9V+t1nlLbTGUyIB28WYUfgoY6qBK4brsOxozCPJShPv1ekWY2mY73mxdr4Z2sLGCoj5ObllzTXKQHTJ3M/NRFCDVtRm6gUMikAwNtZ2yiQimE1EIfSq9NQJSM3XrzqjEk1cqR+Am2ivC8o0IP2ezV52909UTI1rKj+2VrxsWYNA6lubK9L3PCCs0f4TtUrUaiRFPN4NBfXC9gEYQu+ODq1Wf/XZAan/XDEiGLapfRYfMBRPL7UkD8DFsHebO8O5ZrEjUY7ntj6bJEKf+7m5Nk9T2mz35voCY/exQLGQ09Q1wd324DgEzf8XobhYccSh42IPHaihmyjmluJ7n0yQStIE8YdIRA21fi/zfvrrG8D7ip/doMofA0QXQHKo5RVJblVYfDOnws8c5CU72A5cUWvCNawD71Ywr9qQeA+zEmjrQfYIkrtv1BalfbmiLy1+ZTkR+MAuFPDRbsqGeDUILbbet+K5ym+0HX77dG1k1LOFlzBP9+CmERXqCcIHlTI3FP8YlMjZddBKDojV2Palqsn/edqHoXMXHLkCcmyIAW8se55ZwGhdP0ld+ChvfMq+cmCeZc1UEbCWUrF/+yv9FM=
   file: _build/senior_thesis_proposal.pdf
-  skip_cleanup: true
+    skip_cleanup: true
     on:
       tags: true
