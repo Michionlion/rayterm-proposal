@@ -341,9 +341,12 @@ The point of intersection can be found by solving equation ~\ref{equation:ray_su
 \end{equation}
 
 In \name, the only surfaces that will be supported are spheres, triangles, and infinite planes, since their surface definition functions are mathematically simple.
-If there is additional development time and resources available, other shapes such as quads, abitrary polygons, and cubes may be considered.
-A sphere is the simplest object to calculate ray intersection with, and therefore was the first implemented for \name.
-In fact, during feasability testing the math described below was already implemented in the Go programming language.
+If there is additional development time and resources available, other shapes such as quads, arbitrary polygons, and cubes may be considered; in fact, the algorithm discussed for triangle intersection testing is applicable to any convex polygon.
+A sphere is the simplest object to calculate ray intersection with, and therefore will be the first implemented for \name.
+In fact, during feasibility testing much of the math described in this section was implemented in the Go programming language.
+
+\littlesection{Ray-Sphere Intersection}
+
 The surface definition function of a sphere is function ~\ref{equation:sphere_surface}, with $S$ representing the sphere.
 The intersection point between a ray and a sphere is given by solving equation ~\ref{equation:ray_sphere_intersection} for $t$ and then using formula ~\ref{equation:point_on_ray}.
 Notice that equation ~\ref{equation:ray_sphere_intersection} is quadratic, and the number (and values) of the roots give us the $t$ we want to use.
@@ -360,7 +363,10 @@ If there are no real roots, then the ray does not intersect the sphere.
   (\raydir^2)t^2 + 2(\raydir \cdot (\rayorg - \vec{S_{center}}))t + (\rayorg - \vec{S_{center}})^2 - {S_{radius}}^2 = 0
 \end{equation}
 
-For planes, the surface definition function is function ~\ref{equation:plane_surface}, with $P$ representing the plane.
+\littlesection{Ray-Plane Intersection}
+
+For any two-dimensional object, the plane it lies in is the first shape tested for intersection; luckily, ray-plane intersection testing is fairly cheap and straight forward.
+The surface definition function of a plane is function ~\ref{equation:plane_surface}, with $P$ representing the plane.
 The plane's {\it offset} is a point on the plane, and the plane's {\it normal} is a vector perpendicular to the plane.
 The intersection point between a ray and a plane is given by solving equation ~\ref{equation:ray_plane_intersection} for $t$ and then using formula ~\ref{equation:point_on_ray}.
 
@@ -375,6 +381,7 @@ The intersection point between a ray and a plane is given by solving equation ~\
 \end{equation}
 
 %%%%%%%% {{ description of crossing-number algorithm (not used -- too complicated, likely not optimized) }}
+% If this is used in the future should use P_{offset} as origin, not Q
 % The method for testing intersection with triangles is a bit more complicated, but similar to tests for other polygons.
 % First, intersection is tested with the plane the triangle lies in -- this results in a ray-plane intersection point $\vec{Q}$, or no intersection.
 % Then, another test must be performed if there was an intersection to detect if $\vec{Q}$ is inside the triangle.
@@ -392,6 +399,8 @@ The intersection point between a ray and a plane is given by solving equation ~\
 % Then, we will use equation \ref{equation:ray_line_intersection} -- the  ray-line intersection test -- to test each edge of the triangle to see if it intersects.
 % If it does, we add one to the crossing number; then, after testing every edge of the triangle, if the crossing number is even $\vec{Q}$ is outside the triangle.
 % Otherwise, $\vec{Q}$ is inside the triangle.
+
+\littlesection{Ray-Triangle Intersection}
 
 The method for testing intersection with triangles is a bit more complicated, but similar to tests for other polygons.
 The mathematics for this section are heavily modified and adapted from Jean-Colas Prunier's Scratchapixel, an excellent and accessible online resource for 3D rendering \cite{prunier2017triangle}.
@@ -433,7 +442,12 @@ Equation \ref{equation:rendering} is a slightly simplified form of the rendering
 
 Details on the individual scenes planned are given in Section \ref{sec:evaluate}.
 
-\todo{write technical description of implementations for camera movement, scene loading, etc}
+\todo{
+write technical description of implementations for:\\
+camera movement\\
+scene loading\\
+
+}
 
 \subsection{Ray-Character Translation Algorithm}
 \label{sec:method:ray_character_algorithm}
@@ -443,18 +457,13 @@ This algorithm is loosely inspired by the pixel to character translation algorit
 
 \todo{complete algorithm description}
 
-\section{Discussion}
-\label{sec:discussion}
-
-\todo{introduce discussion section -- how?}
-
-\subsection{Evaluation}
+\section{Evaluation}
 \label{sec:evaluate}
 
 % Explain what steps you will take to evaluate your proposed method. If you intend
 % to conduct experiments, then you must clearly define your evaluation metrics.
 
-The first step in evaluating a ray-tracer is to get the output in an easily compared form -- for \name, a debug mode called {\it \texttt{ppm} mode} will generate image files in portable pixmap format.
+The first step in evaluating a ray-tracer is to get the output in an versatile format -- for \name, a debug mode called {\it \texttt{ppm} mode} will generate image files in portable pixmap format.
 This mode will be a different interface in addition to the \texttt{ncurses} character output modes, allowing much higher resolution output for testing.
 It is unlikely that this will be real-time capable, but render times for \texttt{ppm} images with millions of fragments will serve as good benchmarks for algorithm optimizations.
 The image format \texttt{ppm} was chosen for it's human readability along with ease of use for development -- it has both ASCII and binary forms, with the ASCII being more useful in our case.
@@ -524,7 +533,7 @@ As many thousands of objects and possibly millions of rays are computed per seco
 Along side the scene demonstrations will also be material demonstrations -- although simple in nature, they will show off the different implementations of lambertian, dielectric, and metal materials, along with other possible effects such as glass, tessellation, and ray-traced bump mapping.
 Many of these effects are contingent upon available development time, however at least a few should be available in the final project.
 
-\subsection{Development Schedule}
+\littlesection{Development Schedule}
 \label{sec:schedule}
 
 % Identify the main phases and tasks of your research project and set deadlines
