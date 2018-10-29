@@ -15,9 +15,11 @@
 \usepackage{fancyhdr}
 \usepackage{hyperref}
 \usepackage{graphicx}
-\usepackage{xcolor}
 \usepackage{subcaption}
 \usepackage{mathtools}
+
+% may not work with travis ci
+\usepackage{color}
 
 % Use elastic spacing around the headers
 \usepackage{titlesec}
@@ -78,8 +80,9 @@
 
 \newcommand\todo[1]{
 \begin{center}
-  \textcolor{red}{\bf TODO}\\
-  \textcolor{red}{#1}
+  \color{red}
+  {\bf TODO}\\
+  #1
 \end{center}
 }
 
@@ -423,6 +426,8 @@ Equation \ref{equation:rendering} is a slightly simplified form of the rendering
   L_{out}(\vec{x}, \vec{w}) = L_{emit}(\vec{x}, \vec{w}) + \int_{\Omega} f_r(\vec{x}, \vec{v},\vec{w})f_i(\vec{x}, \vec{v})(-\vec{v} \cdot n) dv
 \end{equation}
 
+\todo{complete equation explanation}
+
 \subsection{Real-time Demonstrations}
 \label{sec:method:realtime_demo}
 
@@ -497,20 +502,7 @@ First, a CPU implementation of the recursive ray-tracing algorithm would be deve
 Then, as the ray-tracing code grows to a testable state, the interface to ncurses would be developed.
 This involves implementing the ray to character translation algorithm, as well as standardizing an interface with which another render engine (specifically the future GPU ray-tracer) can interface with the displayed terminal image.
 
-Once both the CPU ray-tracer and \texttt{ncurses} implementations are nearing completion, research will begin on OptiX/CUDA integration.
-The design and architecture of the GPU ray-tracer will take the lessons learned in the implementation of the CPU ray-tracer and use them to improve organization and understandability.
-Additionally, the GPU ray-tracer will be highly parallel, and so extra care must be taken to avoid the problems that are involved with parallelization.
-As the design phase for the GPU ray-tracer is wrapping up, thesis writing will commence.
-The first stages will document the challenges and lessons learned from completing the CPU ray-tracer, including performance testing and evaluation.
-Additional thesis outlines will be generated to guide work on the final GPU ray-tracer.
-
-Finally, implementation of \name's actual GPU ray-tracing engine will begin in early January.
-From this point onward, implementation and demonstration will be the primary goals.
-By late February final demonstration scene creation should be wrapping up, and materials should be well on their way to completion.
-Thesis chapter writing begins in earnest, with disscussions of the various new GPU-based techniques used for the GPU ray-tracer the primary focus.
-Finally, end result testing and graphical comparisons will be made, along with preparation for the thesis defense.
-
-\begin{table}[htbp]
+\begin{table}[htb]
   \vspace*{0.6em}
   \centering
   \begin{tabular}{|c||c|c|}
@@ -530,6 +522,19 @@ Finally, end result testing and graphical comparisons will be made, along with p
   \caption{Proposed work schedule}
   \label{worktable}
 \end{table}
+
+Once both the CPU ray-tracer and \texttt{ncurses} implementations are nearing completion, research will begin on OptiX/CUDA integration.
+The design and architecture of the GPU ray-tracer will take the lessons learned in the implementation of the CPU ray-tracer and use them to improve organization and understandability.
+Additionally, the GPU ray-tracer will be highly parallel, and so extra care must be taken to avoid the problems that are involved with parallelization.
+As the design phase for the GPU ray-tracer is wrapping up, thesis writing will commence.
+The first stages will document the challenges and lessons learned from completing the CPU ray-tracer, including performance testing and evaluation.
+Additional thesis outlines will be generated to guide work on the final GPU ray-tracer.
+
+Finally, implementation of \name's actual GPU ray-tracing engine will begin in early January.
+From this point onward, implementation and demonstration will be the primary goals.
+By late February final demonstration scene creation should be wrapping up, and materials should be well on their way to completion.
+Thesis chapter writing begins in earnest, with disscussions of the various new GPU-based techniques used for the GPU ray-tracer the primary focus.
+Finally, end result testing and graphical comparisons will be made, along with preparation for the thesis defense.
 
 \section{Conclusion}
 \label{sec:conclusion}
