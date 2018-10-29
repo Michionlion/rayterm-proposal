@@ -171,7 +171,7 @@ More details on this process are given in Section ~\ref{sec:introduction:ncurses
 
 A rendering engine is an algorithm that takes a scene -- a description of some space with objects -- and generates an image or visual representation of that scene.
 There are many different algorithms to do this; in this proposal the recursive ray-tracing algorithm, first pioneered by Turner Whitted in his ground-breaking paper {\it An Improved Illumination Model for Shaded Display} \cite{whitted1980improved}, will be discussed and utilized.
-Ray-tracing was one of the first algorithms developed in the field of computer graphs, and although there have been some improvements since then, the idea behind the algorithm is fairly straight forward.
+Ray-tracing was one of the first algorithms developed in the field of computer graphics, and although there have been some improvements since then, the idea behind the algorithm is fairly straight forward.
 
 Ray-tracing has been used as the renderer of choice for photorealistic images, since with a few modification's from Whitted's original algorithm, it can generate fantastic images.
 In the past, however, it has been reserved for non-real-time uses.
@@ -454,10 +454,43 @@ This algorithm is loosely inspired by the pixel to character translation algorit
 % Explain what steps you will take to evaluate your proposed method. If you intend
 % to conduct experiments, then you must clearly define your evaluation metrics.
 
-\todo{describe ray-tracer ``image'' mode (where \texttt{ppm} is generated to check for renderer accuracy)}
+The first step in evaluating a ray-tracer is to get the output in an easily compared form -- for \name, a debug mode called {\it \texttt{ppm} mode} will generate image files in portable pixmap format.
+This mode will be a different interface in addition to the \texttt{ncurses} character output modes, allowing much higher resolution output for testing.
+It is unlikely that this will be real-time capable, but render times for \texttt{ppm} images with millions of fragments will serve as good benchmarks for algorithm optimizations.
+The image format \texttt{ppm} was chosen for it's human readability along with ease of use for development -- it has both ASCII and binary forms, with the ASCII being more useful in our case.
+The format is extremely simple; a \texttt{ppm} file is shown in Figure \ref{fig:ppm_code}, with Figure \ref{fig:ppm_image} being its output.
 
+\begin{figure}[htb]
+  \begin{subfigure}[htb]{0.5\textwidth}
+    \small
+    \begin{verbatim}
+      P3 # header
+      3 2 # width x height
+      255 # max color value
+      # image data -- RGB triplets
+      # (extra whitespace is ignored)
+      255   0   0     0 255   0
+        0   0 255   255 255   0
+      255 255 255     0   0   0
+    \end{verbatim}
+    \caption{Example \texttt{ppm} file contents}
+    \label{fig:ppm_code}
+  \end{subfigure}
+  \begin{subfigure}[htb]{0.5\textwidth}
+    \includegraphics[width=\textwidth]{resources/ppm_example}
+    \caption{Example \texttt{ppm} image}
+    \label{fig:ppm_image}
+  \end{subfigure}
+  \caption{Portable pixmap format example}
+\end{figure}
 
-Demonstration scenes will also be built to enable real-time testing of the ray-tracing algorithm and \name's associated systems. The final project will include at least the following scenes, but may be more extensive.
+Using this \texttt{ppm} image output mode will enable graphical quality comparisons, testing, and bug-fixing.
+It can also provide output and results data for easily implemented regression testing, to ensure any changes are purposeful.
+Lastly, the \texttt{ppm} mode can be used to test the fidelity of \name's ray to character translation algorithm against other available algorithms in programs such as TerminalImageViewer by providing a single, identical input image for translation.
+
+In addition to the \texttt{ppm} mode, demonstration scenes will also be built to enable real-time testing of the ray-tracing algorithm and \name's associated systems.
+These scenes will essentially act as integration tests, as well as provide demonstrations of \name's capabilities.
+The final project will include at least the following scenes, but may be more extensive.
 
 \begin{itemize}
   \setlength\itemsep{-0.25em}
