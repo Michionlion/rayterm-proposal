@@ -128,7 +128,7 @@
 Over the many years of innovation in the field of computer graphics, advances in rendering have led to massive increases in the fidelity of engaging, satisfying, and realistic computer visualizations.
 \name\ is a new and unique entry into the ranks of rendering engines, and makes its own contributions to the field of computer graphics.
 While harkening back to the retro aesthetics of the seventies and eighties, \name\ embraces new advances in computing power to bring fully ray-traced visuals to an old screen -- the terminal.
-Using Unicode block characters to simulate pixels and a ray-tracer written in C++, a fully three dimensional scene can be rendered, complete with lighting, shadows, and physically-based materials.
+Using Unicode block characters to simulate pixels and a ray-tracer written in C++, a fully three dimensional scene will be rendered, complete with lighting, shadows, and physically-based materials.
 \name\ can be used as an engine for terminal-based 3D tools, visualizations, games, and more; it will be fully open-source and ready for integration into other projects.
 
 \end{quote}
@@ -136,16 +136,15 @@ Using Unicode block characters to simulate pixels and a ray-tracer written in C+
 \section{Introduction}
 \label{sec:introduction}
 
-% Provide an intuitive motivation for and introduction to your proposed senior
-% thesis research. Whenever possible, you should use one or more concrete examples
-% and technical diagrams.
+% Provide an intuitive motivation for and introduction to your proposed senior thesis research.
+% Whenever possible, you should use one or more concrete examples and technical diagrams.
 
-In the early days of computing, real-time rendering engines that powered games like {\it Doom} or {\it NetHack} had to run on extremely underpowered hardware, and render to low-resolution screens.
+In the early days of computing, real-time rendering engines that powered games like {\it Doom} or {\it NetHack} had to run on extremely underpowered hardware and render on low-resolution screens.
 The dream of real-time, photorealistic graphics was far, far away.
 However, even then the simple, blocky graphics, easily recognizable shapes, and maze-like environments were fantastic entertainment.
 Today the retro-style of low-resolution graphics, pixel art, and 8-bit color is abound in the gaming space.
-This proposal is one part of enabling that retro-aesthetic to grow into a new and unique style that, while similar to the old classics, can be more engaging and real than they ever could.
-With the current generation of powerful GPU and CPU chips, able to execute billions and trillions of calculations per second, it is finally possible to do real-time, close to photorealistic rendering.
+This proposal is one part of enabling that retro-aesthetic to grow into a new and unique style that, while similar to the old classics, can be more engaging and real than they ever were.
+With the current generation of powerful CPU and GPU chips, able to execute billions and trillions of calculations per second respectively, it is finally possible to do real-time, close to photorealistic rendering.
 While the goal of \name\ is not high-resolution photorealism, some approximation of photorealism will be obtained, albeit at a lower resolution.
 
 
@@ -161,7 +160,7 @@ More details on this process are given in Section ~\ref{sec:introduction:ncurses
 
 \begin{figure}[htb]
   \centering
-  \includegraphics[width=\textwidth]{resources/checker_metal}
+  \includegraphics[width=0.75\textwidth]{resources/checker_metal}
   \caption{Example of proposed terminal output}
   \label{fig:checker_metal}
 \end{figure}
@@ -170,18 +169,18 @@ More details on this process are given in Section ~\ref{sec:introduction:ncurses
 \label{sec:introduction:raytracing}
 
 A rendering engine is an algorithm that takes a scene -- a description of some space with objects -- and generates an image or visual representation of that scene.
-There are many different algorithms to do this; in this proposal the recursive ray-tracing algorithm, first pioneered by Turner Whitted in his ground-breaking paper {\it An Improved Illumination Model for Shaded Display} \cite{whitted1980improved}, will be discussed and utilized.
-Ray-tracing was one of the first algorithms developed in the field of computer graphics, and although there have been some improvements since then, the idea behind the algorithm is fairly straight forward.
+There are many different algorithms to do this; in this proposal, the recursive ray-tracing algorithm first pioneered by Turner Whitted in his ground-breaking paper {\it An Improved Illumination Model for Shaded Display} \cite{whitted1980improved}, will be discussed and utilized.
+Ray-tracing was one of the first algorithms developed in the field of computer graphics, and although there have been some improvements since then, the idea behind the algorithm has maintained its original simplicity.
 
-Ray-tracing has been used as the renderer of choice for photorealistic images, since with a few modification's from Whitted's original algorithm, it can generate fantastic images.
+Ray-tracing has been used as the renderer of choice for photorealistic images since with a few modifications from Whitted's original algorithm, it can generate fantastic images.
 In the past, however, it has been reserved for non-real-time uses.
 For example, Figure ~\ref{fig:povray_render} is a render created by the POV-Ray engine \cite{povray}.
 POV-Ray can take between a few minutes to several hours to complete one single image depending on the processing power involved.
-However, there have been a few recent innovations that change this, and more details on this, as well as how ray-tracing will be utilized in \name, are discussed in Section \ref{sec:method}.
+However, there have been a few recent innovations that change this, such as NVIDIA's RTX hardware acceleration. Section~\ref{sec:method} provides more details on these advances, as well as an explanation of how ray-tracing will be utilized in \name.
 
 \begin{figure}[htb]
   \centering
-  \includegraphics[width=\textwidth]{resources/glasses_povray}
+  \includegraphics[width=0.75\textwidth]{resources/glasses_povray}
   \caption{POV-Ray render created by Gilles Tran \cite{povray2006render}}
   \label{fig:povray_render}
 \end{figure}
@@ -191,7 +190,7 @@ Ray-tracing revolves around the idea of {\it rays}, a mathematical construct whi
 These two vectors together represent a ray that starts at the origin and projects along the direction; it is of infinite length.
 An important addition to the concept of rays is a point along a ray -- this can be defined by using a third variable, which we will call $t$, to represent how far along the ray the point is located.
 Therefore, formula ~\ref{equation:point_on_ray} can be used to get the coordinates of a point in three-dimensional space (assuming $\raydir$ is a unit vector).
-This is called the {\it paramatric~form} of a ray.
+This is called the {\it parametric~form} of a ray.
 The mathematics behind ray-tracing are further explored in Section ~\ref{sec:method}.
 
 \begin{equation}
@@ -202,18 +201,19 @@ The mathematics behind ray-tracing are further explored in Section ~\ref{sec:met
 In ray-tracing, rays are used to simulate the path that light takes as it travels around the scene.
 When a ray intersects with an object in the scene, various things can happen to simulate how light may travel under different conditions.
 It is worth noting that a base assumption is made in ray-tracing when using straight rays as described here: light follows a straight line without changes.
-This is only the case in reality when light travels through a vacuum with no gravitational bodies; thus basic ray-tracing is not exactly photorealistic, and does not model phenomena such as atmospheric scattering.
-Additional mathematics and systems must be used to bend, attenuate, or scatter a ray to accurately render transparent volumes -- this is called volumetric ray-tracing, and will not be supported by \name, at least in the version proposed here.
+This is only the case in reality when light travels through a vacuum with no gravitational bodies; thus, basic ray-tracing is not exactly photorealistic and does not model phenomena like atmospheric scattering.
+Additional mathematics and systems must be used to bend, attenuate, or scatter a ray to accurately render transparent volumes -- this is called volumetric ray-tracing.
+Volumetric ray-tracing will not be supported by the proposed \name, but would be a fascinating area of future work.
 
 The basis for ray-tracing is the rendering equation, articulated by James Kajiya in 1986 \cite{kajiya1986rendering}.
-The mathematics behind the equation are covered in Section \ref{sec:method:rendering_equation}; a simplified description is that the rendering equation models the outgoing light at some point given all incoming light, a bidirectional reflectance distribution function (BDRF) and a normal for the surface at the point modeled.
-If solved for every point in the scene, the rendering equation could generate a completely photorealistic image -- this would, however, require massive amounts of computation since the integral over all incoming light must be solved through numerical analysis.
-Ray-tracing engines that do this are known as {\it path-tracers}, and are the most photorealistic rendering engines invented.
+The rendering equation models the outgoing light at some point given all incoming light, a bidirectional reflectance distribution function (BDRF), and a normal for the surface at the point modeled.
+If solved for every point in the scene, the rendering equation could generate a completely photorealistic image -- this would, however, require massive amounts of computation since the equation contains an integral over all incoming light that must be solved through numerical analysis.
+Ray-tracing engines that do this are known as {\it path-tracers} and are the most photorealistic rendering engines invented.
 
-\name\ will not use a path-tracer -- they are still many times too slow for real-time rendering.
+\name\ will not use a path-tracer -- such algorithms are still many times too slow for most real-time rendering situations.
 Instead, the rendering equation will solved by sampling the incoming light with rays.
-This is known as recursive ray-tracing, since we will start with a single ray which will split every time it encounters a surface.
-The eventual goal of the recursive ray-traving algorithm is to create a tree of rays for each {\it fragment} to render.
+This is known as recursive ray-tracing, since it starts with a single ray that splits every time it encounters a surface.
+The eventual goal of the recursive ray-tracing algorithm is to create a tree of rays for each {\it fragment} to render.
 A fragment is either a pixel or some sub-pixel -- many systems will use four or more fragments per pixel to get better anti-aliasing and more accurate results.
 Each ray has some color that represents the color of the light in that ray; when a ray hits an object, it is {\it scattered} by the {\it material} of the object, splitting and generating new rays.
 These rays are biased towards directions that contain lots of incoming light -- such as towards a point light source.
@@ -231,8 +231,8 @@ This is done recursively to fully render the scene.
 
 Unicode is a character standard that allows anyone to reference many thousands of characters to compose text, no matter the environment around the text.
 Some critical characters that \name\ will use are known as the {\it block characters} -- they are characters \texttt{U+2580} -- \texttt{U+259F}.
-Contingent on the quality of the output using only block characters, additional sets could be used such as triangles and lines.
-The core of image composition using Unicode is coloring the characters and the background -- \name\ will use this so that every character of the output contains two colors -- one for the background, and one for the character displayed.
+Contingent on the quality of the output using only block characters, additional sets could be used, such as triangles and lines.
+The core of image composition using Unicode is coloring the characters and the background -- \name\ will use this so that every character of the output contains two colors -- one for the background and one for the character displayed.
 This allows each {\it character~pixel} to represent a hard gradient.
 
 There are two image modes that will be available for use in \name.
@@ -243,10 +243,10 @@ This mode also dramatically reduces the number of ray-tracing computations neede
 
 The second image mode is considerably more complicated and slower, as it uses significantly more rays per character in order to determine what Unicode block character most fits the desired output.
 On the other hand, it allows a much higher perceived resolution, since the characters used have smaller footprints -- up to an eigth of a character in width or length.
-The differences between these two modes are highlighted in Figure \ref{fig:unicode_mode_comparison1} and \ref{fig:unicode_mode_comparison2}.
-It can be seen that the first image mode, {\it pixel mode}, has a rather fuzzy definition of the sphere, whereas in the second image mode, {\it block character mode}, the sphere itself, as well as the reflections seen on it, are much more defined.
-The performance impact of both modes is another factor that must be assessed when choosing how to implement \name.
-More details on the algorithm for ray to character translation is available in Section \ref{sec:method:ray_character_algorithm}.
+The differences between these two modes are highlighted in Figure~\ref{fig:unicode_mode_comparison1} and~\ref{fig:unicode_mode_comparison2}.
+It can be seen that the first image mode, {\it pixel mode}, has a rather fuzzy definition of the sphere, whereas in the second image mode, {\it character mode}, the sphere itself, as well as the reflections seen on it, are much more defined.
+The performance impact of both modes is another factor that must be assessed when making implementation decisions for \name.
+More details on the algorithm for ray-to-character translation is available in Section~\ref{sec:method:ray_character_algorithm}.
 
 \begin{figure}[htb]
   \begin{subfigure}[htb]{0.5\textwidth}
@@ -272,16 +272,14 @@ With this dependency, \name\ can be used on all terminals that support \texttt{n
 
 A possible limitation to \texttt{ncurses} is keyboard input handling -- it is not possible to get events on a down-movement or up-movement of a key, as is possible in some other libraries.
 Therefore, some research will need to be done on possible alternatives for the input aspect of the engine.
-This is, however, not a priority, since it is not related to the rendering nature of \name, and instead only helps with demonstrations of its capabilities.
+This is not a priority, however, since it is not related to the rendering nature of \name and instead only helps with demonstrations of its capabilities.
 
 \section{Related Work}
 \label{sec:relatedwork}
 
-% Summarize the previously published papers and books that are related to your
-% proposed research. Whenever possible, you should compare and contrast your
-% approach with the ones that have been discussed in the past. As you describe
-% related papers, please make sure that you cite them
-% properly~\cite{conrad-gecco-selection-study}.
+% Summarize the previously published papers and books that are related to your proposed research.
+% Whenever possible, you should compare and contrast your approach with the ones that have been discussed in the past.
+% As you describe related papers, please make sure that you cite them properly~\cite{conrad-gecco-selection-study}.
 
 % To create an image, a ray-tracer first generates {\it eye-rays}, one for each pixel to render.
 % These rays have their origin at the camera, and a direction which causes the ray to pass through the pixel to render.
@@ -306,33 +304,26 @@ termloop\\
 \section{Method of Approach}
 \label{sec:method}
 
-% Use technical diagrams, equations, algorithms, and paragraphs of text to
-% describe the research that you intend to complete. See the \LaTeX\ source file
-% for the proposal to learn how Figure~~\ref{intro-fig1} and Table~~\ref{intro-tab1}
-% were included. Be sure to number all figures and tables and to explicitly refer
-% to them in your text.
+% Use technical diagrams, equations, algorithms, and paragraphs of text to describe the research that you intend to complete.
+% See the \LaTeX\ source file for the proposal to learn how Figure~~\ref{intro-fig1} and Table~~\ref{intro-tab1} were included.
+% Be sure to number all figures and tables and to explicitly refer to them in your text.
 
+The methods, algorithms, and techniques used to implement \name\ are discussed here.
+In Section~\ref{sec:method:algorithms} we detail most of the mathematics involved; core algorithms for the \texttt{ncurses} interface are also covered there.
+Software tools and languages utilized to build \name\ are discussed in Section~\ref{sec:method:software}.
+Finally, hardware interfaces, along with the current landscape of hardware availability, are covered in Section~\ref{sec:method:hardware}. Additionally, discussion on parrallelization is presented.
 
-There are a lot of unsolved technical issues that will be encountered as work continues for \name.
-Much of this is related to the performance and testing aspects of \name, since a high level of optimization is needed in order to obtain real-time results.
-Only recently has ray-tracing even been able to achieve real-time levels of performance -- much of this progress is thanks to advances in GPU technology.
-The largest innovator in this space, GPU chip design company NVIDIA, released its RTX series of GPUs that have hardware support for ray-tracing.
-However, although fascinating, this proposal will not focus on RTX hardware, since its spread is slow due to the high barrier to entry because of cost.
+\subsection{Algorithms and Mathematics}
+\label{sec:method:algorithms}
+The mathematical basis for ray-tracing, which we describe in Section~\ref{sec:method:ray_surface_intersection_algorithms}, relies on an understanding of vector math.
+These algorithms will be running millions of times per second in a highly parallelized environment; therefore, any small optimizations make huge differences in the end product.
+We also cover details for the proposed algorithms for ray-to-character translations in Section~\ref{sec:method:ray_character_algorithm}.
+All of the ray-tracing mathematics described here are synthesized from Peter Shirley's excellent {\it Ray Tracing in One Weekend} \cite{shirley2016ray} and the Morgan Kaufmann textbook {\it Physically Based Rendering: From Theory to Implementation} \cite{pharr2016physically}.
 
-The main technical research will be done on the OptiX API \cite{parker2010optix} for older NVIDIA GPUs that enables GPU-accelerated ray-object intersection calculations.
-The main goals of this forray are to understand and use the technologies already available for non-real-time ray-tracing to do real-time work.
-Although a CPU-only ray-tracer is completely possible, and likely the first step in embarking on the creation of \name, it is not likely to be performant enough for real-time graphics.
-Therefore leveraging either CUDA (a compute API for NVIDIA GPUs \cite{nvidia2011cuda}) directly, or utilizing OptiX will be required.
-Using a GPU is essential in this area since ray-tracing is highly parrallelizable, and can have massive speed gains from using many hundreds of cores.
-
-The other technical challenges we cover in this section are the the mathematical basis for ray-tracing, along with details about the proposed implementation.
-Much of the math is informed by Peter Shirley's excellect {\it Ray Tracing in One Weekend} \cite{shirley2016ray}, as well as the Morgan Kaufmann textbook {\it Physically Based Rendering: From Theory to Implementation} \cite{pharr2016physically}.
-
-
-\subsection{Ray-Surface Intersection}
-
+\subsubsection{Ray-Surface Intersection Algorithms}
+\label{sec:method:ray_surface_intersection_algorithms}
 Scenes that can be ray-traced must be a collection of surfaces that are mathematically intersectable with a ray.
-Any surface that can be defined by $f(\vec{p}) = 0$, that is, $f(\vec{p})$ is $0$ when $\vec{p}$ is on the surface, is intersectable with a ray.
+Any surface that can be defined by $f(\vec{p}) = 0$, that is, $f(\vec{p})$ is $0$ when $\vec{p}$ is on the surface, is intersectable with a ray \cite{pharr2016physically}.
 The point of intersection can be found by solving equation ~\ref{equation:ray_surface_intersection} for $t$ and then using formula ~\ref{equation:point_on_ray} to calculate the coordinates of that point on the ray.
 
 \begin{equation}
@@ -349,6 +340,7 @@ In fact, during feasibility testing much of the math described in this section w
 
 The surface definition function of a sphere is function ~\ref{equation:sphere_surface}, with $S$ representing the sphere.
 The intersection point between a ray and a sphere is given by solving equation ~\ref{equation:ray_sphere_intersection} for $t$ and then using formula ~\ref{equation:point_on_ray}.
+Both of these equations are directly adapted from {\it Ray Tracing in One Weekend} \cite{shirley2016ray}.
 Notice that equation ~\ref{equation:ray_sphere_intersection} is quadratic, and the number (and values) of the roots give us the $t$ we want to use.
 The smallest positive root corresponds to the point on the ray which first intersects the sphere.
 If there are no real roots, then the ray does not intersect the sphere.
@@ -369,6 +361,7 @@ For any two-dimensional object, the plane it lies in is the first shape tested f
 The surface definition function of a plane is function ~\ref{equation:plane_surface}, with $P$ representing the plane.
 The plane's {\it offset} is a point on the plane, and the plane's {\it normal} is a vector perpendicular to the plane.
 The intersection point between a ray and a plane is given by solving equation ~\ref{equation:ray_plane_intersection} for $t$ and then using formula ~\ref{equation:point_on_ray}.
+These equations were derived from basic vector math, along with inspiration from {\it Physically Based Rendering} \cite{pharr2016physically}.
 
 \begin{equation}
   \label{equation:plane_surface}
@@ -387,7 +380,7 @@ The intersection point between a ray and a plane is given by solving equation ~\
 % Then, another test must be performed if there was an intersection to detect if $\vec{Q}$ is inside the triangle.
 % Before we do this we must transform our coordinate system to 2D by projecting $\vec{Q}$ and the triangle's vertices  onto the plane.
 % We can define our $\vec{X}$ and $\vec{Y}$ axes to be $\vec{X} = \vec{V_0} - \vec{V_1}$ and $\vec{Y} = \vec{P_{normal}} \times \vec{X}$; our origin we define to be $\vec{Q}$.
-% Finally, we can use function \ref{equation:3d_to_2d} to transform a three dimensional vector to a two-dimensional point on the plane.
+% Finally, we can use function~\ref{equation:3d_to_2d} to transform a three dimensional vector to a two-dimensional point on the plane.
 %
 % \begin{equation}
 %   \label{equation:3d_to_2d}
@@ -396,66 +389,172 @@ The intersection point between a ray and a plane is given by solving equation ~\
 %
 % After converting our triangle vertices $\vec{V_0}, \vec{V_1}, \vec{V_2}$ to planar coordinates, we can test whether the triangle defined by them includes the origin $\vec{Q}$.
 % We will do this using the ``crossing number'' method; first, create an arbitrary 2D ray with $\rayorg = [0, 0]$ and $\raydir = [0,\ 1]$.
-% Then, we will use equation \ref{equation:ray_line_intersection} -- the  ray-line intersection test -- to test each edge of the triangle to see if it intersects.
+% Then, we will use equation~\ref{equation:ray_line_intersection} -- the  ray-line intersection test -- to test each edge of the triangle to see if it intersects.
 % If it does, we add one to the crossing number; then, after testing every edge of the triangle, if the crossing number is even $\vec{Q}$ is outside the triangle.
 % Otherwise, $\vec{Q}$ is inside the triangle.
 
 \littlesection{Ray-Triangle Intersection}
 
-The method for testing intersection with triangles is a bit more complicated, but similar to tests for other polygons.
-The mathematics for this section are heavily modified and adapted from Jean-Colas Prunier's Scratchapixel, an excellent and accessible online resource for 3D rendering \cite{prunier2017triangle}.
+The method for testing intersection with triangles is a bit more complicated than the other tests we've covered so far.
+The mathematics for this section are again derived from vector mathematics, however Jean-Colas Prunier's {\it Scratchapixel}, an excellent and accessible online resource for 3D rendering \cite{prunier2017triangle}, was an indispensable guide along the way.
 First, intersection is tested with the plane the triangle lies in -- this results in a ray-plane intersection point $\vec{Q}$, or no intersection.
-Then, another test must be performed, if there was an intersection, to detect if $\vec{Q}$ is inside the triangle.
-We will do this using the ``inside-outside'' method: test if $\vec{Q}$ is on the left side of each edge.
-First, we label each triangle vertex $\vec{V_i}$, with $i$ increasing in the counter-clockwise direction.
-Then we can use function \ref{equation:left_edge_test}; if $f(i) > 0$ for each $i$, then $\vec{Q}$ is inside.
-Otherwise, $\vec{Q}$ is outside the triangle
-.Note that in function \ref{equation:left_edge_test}, if $i = 3$, then $i = 0$ ($i$ ``wraps'' to only valid values) Additionally, this method will work for for any $n$-sided convex polygon (such as rectangles).
+Then, if there was an intersection, another test must be performed to detect if $\vec{Q}$ is inside the triangle.
+We do this using the ``inside-outside'' method (as suggested by {\it Scratchapixel}): test if $\vec{Q}$ is on the left side of each edge.
+First, label each triangle vertex $\vec{V_i}$, with $i$ increasing in the counter-clockwise direction.
+Thus we have three triangle vertices: $\vec{V_0}$, $\vec{V_1}$, and $\vec{V_2}$.
+We can then use function~\ref{equation:left_edge_test}: if $f(i) > 0$ for each $i$, then $\vec{Q}$ is inside the triangle.
+Otherwise, $\vec{Q}$ is outside the triangle.
+Note that in function~\ref{equation:left_edge_test}, if $i = 3$, then $i = 0$ ($i$ ``wraps'' to only valid values).
 
 \begin{equation}
   \label{equation:left_edge_test}
   f(i) = P_{normal} \cdot ((\vec{V_{i+1}} - \vec{V_i}) \times (\vec{Q} - \vec{V_i}))
 \end{equation}
 
-Function \ref{equation:left_edge_test} can be complicated to visualize, so imagine this: we first form two vectors, both with $\rayorg = \vec{V_i}$.
+Function~\ref{equation:left_edge_test} can be complicated to visualize, so imagine this: we first form two vectors, both with $\rayorg = \vec{V_i}$.
 One points along the triangle's edge, while the other points to $\vec{Q}$.
 Both of these vectors will be in the plane of the triangle.
 Thus, if we cross them, the vector produced will either be away from the plane in the same direction as $\vec{P_{normal}}$, or away from the plane in the opposite direction.
 According to the right hand rule, if the crossed vector is in the same direction as $\vec{P_{normal}}$, then the vector pointing to $\vec{Q}$ is ``to the left'' of the vector pointing towards $\vec{V_{i+1}}$.
 We can then get the dot product between $\vec{P_{normal}}$ and the crossed vector -- if it is positive then the crossed vector is in the same direction as the normal, and therefore $\vec{Q}$ is to the left of the edge.
-One last addendum to this intersection test is the the fact that it is very difficult to perform the counter-clockwise numbering of vertices -- therefore, we will simply expect vertices to be specified in counter-clockwise order.
+One last addendum to this intersection test is the fact that it is very difficult to perform the counter-clockwise numbering of vertices -- therefore, we will simply expect vertices to be specified in counter-clockwise order.
 This is similar to what many other 3D rendering programs assume.
 
-\subsection{Rendering Equation}
-\label{sec:method:rendering_equation}
-Equation \ref{equation:rendering} is a slightly simplified form of the rendering equation, removing properties dealing with the wavelength of light and time.
+%%%%%% Rendering Equation explanation
+% \subsection{Rendering Equation}
+% \label{sec:method:rendering_equation}
+% Equation~\ref{equation:rendering} is a slightly simplified form of the rendering equation, removing properties dealing with the wavelength of light and time.
+%
+% \begin{equation}
+%   \label{equation:rendering}
+%   L_{out}(\vec{x}, \vec{w}) = L_{emit}(\vec{x}, \vec{w}) + \int_{\Omega} f_r(\vec{x}, \vec{v},\vec{w})f_i(\vec{x}, \vec{v})(-\vec{v} \cdot n) dv
+% \end{equation}
 
-\begin{equation}
-  \label{equation:rendering}
-  L_{out}(\vec{x}, \vec{w}) = L_{emit}(\vec{x}, \vec{w}) + \int_{\Omega} f_r(\vec{x}, \vec{v},\vec{w})f_i(\vec{x}, \vec{v})(-\vec{v} \cdot n) dv
-\end{equation}
-
-\todo{complete equation explanation}
-
-\subsection{Real-time Demonstrations}
-\label{sec:method:realtime_demo}
-
-Details on the individual scenes planned are given in Section \ref{sec:evaluate}.
-
-\todo{
-write technical description of implementations for:\\
-camera movement\\
-scene loading\\
-
-}
-
-\subsection{Ray-Character Translation Algorithm}
+\subsubsection{Ray-Character Translation Algorithm}
 \label{sec:method:ray_character_algorithm}
 
-To translate the color result of a ray-trace to an actual character pixel, a similarity test is used.
-This algorithm is loosely inspired by the pixel to character translation algorithm used in TerminalImageViewer \cite{tivGithub}; however, it has less input data -- instead of a 4 by 8 pixel field, only a few color samples from ray-tracing results are available.
+To translate the color result of a ray-trace to an actual character pixel, we propose two algorithms.
+These algorithms are inspired by the pixel-to-character translation algorithm used in TerminalImageViewer \cite{tivGithub} -- they are optimization attempts.
+\name\ will start with the Quadrant Algorithm, and then research and testing will be conducted to see if it is possible to improve towards the Search Algorithm, without incurring too much performance cost.
+If neither algorithm is able to produce an acceptable image quality, and running TerminalImageViewer's algorithm is possible in real-time (it will require $32$ rays per character pixel), then \name\ will use that algorithm instead of an optimized version.
 
-\todo{complete algorithm description}
+
+\littlesection{Quadrant Algorithm}
+
+The Quadrant Algorithm works with only four rays per character pixel.
+These four rays will sample each of the four quadrants of the character, and give color values.
+Once we have the four quadrant colors, we take the perceived brightness of each quadrant, using formula~\ref{equation:perceived_brightness}, where $C$ is the color in question \cite{finley2006hsp}.
+Using the translated values we calculate an average brightness for the entire character. Any quadrant which has a higher brightness is then considered ``on'', while any darker quadrants are ``off''.
+Thus we determine which character from the set \texttt{U+2596} -- \texttt{U+259F}, which is a subset of the Unicode block characters that consist of all combinations of character quadrants, best represents the brightness gradient of the character pixel.
+After this, we must determine the color of the foreground (``on'') and background (``off'') quadrants.
+This is simply the average color value of the relevant rays -- with this computed we have the colors and character to use for the character pixel.
+
+\begin{equation}
+  \label{equation:perceived_brightness}
+  {brightness} = \sqrt{0.299 {C_{red}}^2 + 0.587 {C_{green}}^2 + 0.114 {C_{blue}}^2}
+\end{equation}
+
+The Quadrant Algorithm's main problem is that it does not take into account color differences -- colors may be wildly different but have the same perceived brightness and if this is the case then the average color would not be an accurate representation of the character pixel.
+The main way to combat this would be to determine the ``on''-ness of quadrants by a per-channel tonal range check, as TerminalImageViewer does.
+Before making such optimizations, however, the algorithm must be tested with actual images.
+
+
+\littlesection{Search Algorithm}
+
+The Search Algorithm starts with a completely different premise than the Quadrant Algorithm -- it keeps track of what characters might be a good fit and, with each additional ray computed, narrows the list.
+This algorithm must again use the criterion of ``on'' and ``off''-ness, to calculate what parts of the image should be foreground and which background -- with this comes the previous problem of possible color inaccuracy.
+The Search Algorithm searches over characters from the set \texttt{U+2581} -- \texttt{U+258F}; these characters are blocks that range from one-eighth to seven-eighths in height, and the same in the width direction.
+The character pixel is sampled with rays in a semi-randomized fashion -- first a vertical search of the pixel is conducted, attempting to find an edge between ``on'' and ``off''.
+Then, a search across the horizontal of the pixel is conducted.
+In both of these searches the non-relevant axis is randomized to ensure that a significant edge is not missed.
+Figure~\ref{fig:ray_sample_run} shows an example of one such set of searches.
+
+\begin{figure}[htb]
+  \centering
+  \begin{subfigure}[htb]{0.33\textwidth}
+    \includegraphics[width=\textwidth]{resources/height_search}
+    \caption{Example randomized search over the character's vertical axis}
+  \end{subfigure}
+  \hspace{0.12\textwidth}
+  \begin{subfigure}[htb]{0.33\textwidth}
+    \includegraphics[width=\textwidth]{resources/width_search}
+    \caption{Example randomized search over the character's horizontal axis}
+  \end{subfigure}
+  \caption{Example randomized searches -- numbers indicate processing order}
+  \label{fig:ray_sample_run}
+\end{figure}
+
+Once the searches are complete, and an edge is found in both directions, the magnitude of the edges are tested.
+The larger edge is then given priority, and the relevant character is selected -- for instance, if the vertical edge is given priority, and rays $1$, $3$, and $5$ (see Figure~\ref{fig:ray_sample_run}) are on, then the three-eighths tall block character (\texttt{U+2583}) will be selected for that character pixel.
+This algorithm must also be tested with actual images, to judge the quality of the translation.
+As with the Quadrant Algorithm, there are some possible optimizations for this algorithm -- most only apply to a sequential implementation; however, it would actually be faster to ray-trace all $16$ samples in parallel than to stop after every ray and check whether an edge has been found, as most optimizations would do.
+
+\subsection{Software}
+\label{sec:method:software}
+
+\todo{intro to software descriptions}
+
+\subsubsection{Real-time Demonstrations}
+\label{sec:method:realtime_demo}
+
+Details on the individual scenes planned are given in Section~\ref{sec:evaluate}.
+
+\littlesection{The Camera}
+
+\todo{}
+
+\littlesection{Object Representation}
+
+\todo{}
+
+\littlesection{Scene Storage}
+
+\todo{}
+
+\subsubsection{Programming Languages and Libraries}
+\label{sec:method:languages_and_libraries}
+
+Details on the proposed implementation languages and libraries.
+
+\littlesection{C++}
+
+\todo{}
+
+\littlesection{\texttt{\bf ncurses}}
+
+\todo{}
+
+\littlesection{Gradle}
+
+\todo{}
+
+
+\subsection{Hardware}
+\label{sec:method:hardware}
+
+There are a lot of unsolved technical issues that will be encountered as work continues for \name.
+Much of this is related to the performance aspects of \name, since a high level of optimization is needed in order to obtain real-time results.
+Only recently has ray-tracing even been able to achieve real-time levels of performance -- much of this progress is thanks to advances in GPU technology.
+The largest innovator in this space, GPU chip design company NVIDIA, released its RTX series of GPUs that have hardware support for ray-tracing.
+However, although fascinating, this proposal will not focus on RTX hardware, since its spread is slow due to the high early adoption cost.
+
+The main technical research for hardware acceleration will be done on the OptiX API \cite{parker2010optix}, an interface developed for current generation NVIDIA GPUs that enables GPU-accelerated ray-object intersection calculations in a programmable graphics pipeline.
+The main goals of this research are to understand and use the technologies already available for non-real-time ray-tracing to do real-time work.
+Although a CPU-only ray-tracer is completely possible, and likely the first step in embarking on the creation of \name, it is not likely to be performant enough for real-time graphics.
+Therefore leveraging either CUDA (a compute API for NVIDIA GPUs \cite{nvidia2011cuda}) directly, or utilizing OptiX will be required.
+
+\subsubsection{GPU vs. CPU}
+
+\todo{}
+
+\subsubsection{OptiX}
+
+\todo{}
+
+\subsubsection{CUDA}
+
+\todo{}
+
 
 \section{Evaluation}
 \label{sec:evaluate}
@@ -467,11 +566,12 @@ The first step in evaluating a ray-tracer is to get the output in an versatile f
 This mode will be a different interface in addition to the \texttt{ncurses} character output modes, allowing much higher resolution output for testing.
 It is unlikely that this will be real-time capable, but render times for \texttt{ppm} images with millions of fragments will serve as good benchmarks for algorithm optimizations.
 The image format \texttt{ppm} was chosen for it's human readability along with ease of use for development -- it has both ASCII and binary forms, with the ASCII being more useful in our case.
-The format is extremely simple; a \texttt{ppm} file is shown in Figure \ref{fig:ppm_code}, with Figure \ref{fig:ppm_image} being its output.
+The format is extremely simple; a \texttt{ppm} file is shown in Figure~\ref{fig:ppm_code}, with Figure~\ref{fig:ppm_image} being its output.
 
 \begin{figure}[htb]
   \begin{subfigure}[htb]{0.5\textwidth}
     \small
+    \vspace{2.6em}
     \begin{verbatim}
       P3 # header
       3 2 # width x height
@@ -482,20 +582,20 @@ The format is extremely simple; a \texttt{ppm} file is shown in Figure \ref{fig:
         0   0 255   255 255   0
       255 255 255     0   0   0
     \end{verbatim}
-    \caption{Example \texttt{ppm} file contents}
+    \caption{\texttt{ppm} file contents}
     \label{fig:ppm_code}
   \end{subfigure}
   \begin{subfigure}[htb]{0.5\textwidth}
     \includegraphics[width=\textwidth]{resources/ppm_example}
-    \caption{Example \texttt{ppm} image}
+    \caption{\texttt{ppm} image}
     \label{fig:ppm_image}
   \end{subfigure}
   \caption{Portable pixmap format example}
 \end{figure}
 
 Using this \texttt{ppm} image output mode will enable graphical quality comparisons, testing, and bug-fixing.
-It can also provide output and results data for easily implemented regression testing, to ensure any changes are purposeful.
-Lastly, the \texttt{ppm} mode can be used to test the fidelity of \name's ray to character translation algorithm against other available algorithms in programs such as TerminalImageViewer by providing a single, identical input image for translation.
+It will also provide output and results data for output-based regression testing, to ensure that any changes are purposeful.
+Lastly, \texttt{ppm} mode will be used to test the fidelity of \name's ray-to-character translation algorithm against other available algorithms in programs such as TerminalImageViewer by providing a single, identical input image for translation.
 
 In addition to the \texttt{ppm} mode, demonstration scenes will also be built to enable real-time testing of the ray-tracing algorithm and \name's associated systems.
 These scenes will essentially act as integration tests, as well as provide demonstrations of \name's capabilities.
@@ -510,10 +610,11 @@ The final project will include at least the following scenes, but may be more ex
   \item Environment Exploration
 \end{itemize}
 
-The first two scenes are famous ray-tracing example scenes, and can be used to benchmark the performance of \name\ against other ray-tracing engines such as Octane or Blender.
+The first two scenes are famous ray-tracing example scenes and will be used to benchmark the performance of \name\ against other ray-tracing engines, such as OctaneRender or Blender.
+With the addition of the {\texttt{ppm}} image mode, output images will be visually compared to detect errors in visual effects such as specular reflections.
 The other three are demo scenes designed to showcase certain aspects of \name.
-The Shadow Demo scene is a simple scene similar to NVIDIA's RTX shadow demo, seen in Figure \ref{fig:nvidia_shadows}.
-It demonstrates soft shadows, and will show the limitations of \name's ray-tracer, since at least at the moment only point lights will be supported.
+The Shadow Demo scene is a simple scene similar to NVIDIA's RTX shadow demo, seen in Figure~\ref{fig:nvidia_shadows}.
+It will demonstrate soft shadows and show the limitations of \name's ray-tracer, since, at least at the moment, only point lights will be supported.
 When this scene is implemented, and if there is time in the development schedule, area lights may be implemented through multiple random sampling.
 This simple addition to recursive ray-tracing simply adds more shadow rays to each scatter, randomly spread between any area lights in the scene.
 
@@ -526,23 +627,23 @@ This simple addition to recursive ray-tracing simply adds more shadow rays to ea
 
 The Moving Object scene will be modeled after a typical Cornell Box, however the main point of the scene will be object and light source movement -- animated in real time.
 This will stress the ray-tracer and demonstrate the real-time shadows, lighting, and rendering to the fullest extent.
-Finally, the Environment Exploration scene is a somewhat nebulous idea -- it is a scene where the user can ``explore'' and move the camera around to experience a wider area.
+Finally, the Environment Exploration scene is a somewhat nebulous idea -- it is a scene where the user will be able to ``explore'' and move the camera around to experience a wider area.
 Currently envisioned as a set of complex models of a street corner or otherwise realistic location, it will be the stress test for \name.
-As many thousands of objects and possibly millions of rays are computed per second, this scene will ensure the ray-tracing algorithm is well-designed and optimized.
+As many thousands of objects and possibly millions of rays are computed per second, this scene will ensure that the ray-tracing algorithm is well-designed and optimized.
 
-Along side the scene demonstrations will also be material demonstrations -- although simple in nature, they will show off the different implementations of lambertian, dielectric, and metal materials, along with other possible effects such as glass, tessellation, and ray-traced bump mapping.
-Many of these effects are contingent upon available development time, however at least a few should be available in the final project.
+Along with the scene demonstrations there will also be material demonstrations -- although simple in nature, they will show off the different implementations of lambertian, dielectric, and metal materials, along with other possible effects such as glass, tessellation, and ray-traced bump mapping.
+Many of these effects are contingent upon available development time, however, at least the lambertian and metal demonstrations should be available in the final project.
 
-\littlesection{Development Schedule}
+\section{Research Schedule}
 \label{sec:schedule}
 
 % Identify the main phases and tasks of your research project and set deadlines
 % for when you will be able to complete each of these items.
 
-Table \ref{worktable} proposes a schedule for the implementation and research work needed to complete \name.
-First, a CPU implementation of the recursive ray-tracing algorithm would be developed, at first tested in \texttt{ppm} output mode.
-Then, as the ray-tracing code grows to a testable state, the interface to ncurses would be developed.
-This involves implementing the ray to character translation algorithm, as well as standardizing an interface with which another render engine (specifically the future GPU ray-tracer) can interface with the displayed terminal image.
+Table~\ref{worktable} proposes a schedule for the implementation and research work needed to complete \name.
+First, a CPU implementation of the recursive ray-tracing algorithm will be developed, at first tested in \texttt{ppm} output mode.
+Then, as the ray-tracing code grows to a testable state, the interface to \texttt{ncurses} will be developed.
+This involves implementing the ray-to-character translation algorithm, as well as standardizing an interface with which another render engine (specifically the future GPU ray-tracer) can interface with the displayed terminal image.
 
 \begin{table}[htb]
   \vspace*{0.6em}
@@ -550,16 +651,16 @@ This involves implementing the ray to character translation algorithm, as well a
   \begin{tabular}{|c||c|c|}
     \hline
     \textbf{Task} & \textbf{Begin Date} & \textbf{End Date} \\\hline\hline
-    Proposal defense prep & Early Nov & Mid Nov \\\hline
-    CPU ray-tracer impl & Late Nov & Early Jan \\\hline
-    \texttt{ncurses} interface impl & Mid Dec & Late Jan \\\hline
-    OptiX/CUDA research & Mid Dec & Early Jan \\\hline
-    Thesis chapter outlines & Early Dec & Late Jan \\\hline
-    GPU impl/rewrite & Early Jan & Early Feb \\\hline
-    Scene/material creation & Mid Dec & Late Mar \\\hline
-    Thesis chapter writing & Early Feb & Early April \\\hline
-    Graphics Testing & Early Mar & Mid Mar \\\hline
-    Thesis defense prep & Early Apr & Mid Apr \\\hline
+    Proposal defense preparation & Early Nov. & Mid Nov. \\\hline
+    CPU implementation & Late Nov. & Early Jan. \\\hline
+    \texttt{ncurses} interface implementation & Mid Dec. & Late Jan. \\\hline
+    Thesis introduction/related works & Late Nov. & Mid Dec. \\\hline
+    OptiX/CUDA research & Mid Dec. & Early Jan. \\\hline
+    GPU implementation & Early Jan. & Early Feb. \\\hline
+    Scene/material creation & Mid Dec. & Late Mar. \\\hline
+    Thesis chapter writing & Early Feb. & Early Apr. \\\hline
+    Graphical testing/comparison & Early Mar. & Mid Mar. \\\hline
+    Thesis defense preparation & Early Apr. & Mid Apr. \\\hline
   \end{tabular}
   \caption{Proposed work schedule}
   \label{worktable}
@@ -567,16 +668,16 @@ This involves implementing the ray to character translation algorithm, as well a
 
 Once both the CPU ray-tracer and \texttt{ncurses} implementations are nearing completion, research will begin on OptiX/CUDA integration.
 The design and architecture of the GPU ray-tracer will take the lessons learned in the implementation of the CPU ray-tracer and use them to improve organization and understandability.
-Additionally, the GPU ray-tracer will be highly parallel, and so extra care must be taken to avoid the problems that are involved with parallelization.
-As the design phase for the GPU ray-tracer is wrapping up, thesis writing will commence.
-The first stages will document the challenges and lessons learned from completing the CPU ray-tracer, including performance testing and evaluation.
-Additional thesis outlines will be generated to guide work on the final GPU ray-tracer.
+Additionally, the GPU ray-tracer will be highly parallelized, and so extra care must be taken to avoid the problems that are involved with parallelization.
+Before the design phase for the GPU ray-tracer starts, thesis writing will commence in earnest.
+The first stages of writing will document the challenges and lessons learned from completing the CPU ray-tracer, including performance testing and evaluation; these will eventually end up in the Methods of Approach section of the thesis document.
+Additional research and writing for the Introduction and Related Works sections will also begin at this time.
 
 Finally, implementation of \name's actual GPU ray-tracing engine will begin in early January.
 From this point onward, implementation and demonstration will be the primary goals.
-By late February final demonstration scene creation should be wrapping up, and materials should be well on their way to completion.
-Thesis chapter writing begins in earnest, with disscussions of the various new GPU-based techniques used for the GPU ray-tracer the primary focus.
-Finally, end result testing and graphical comparisons will be made, along with preparation for the thesis defense.
+By late February, final demonstration scene creation should be wrapping up and material demonstrations should be well on their way to completion.
+The tempo of thesis chapter writing picks up early March, with discussions of the various new GPU-based techniques used for the GPU ray-tracer as the primary focus.
+Finally, end result testing and graphical comparisons will be conducted and documented, along with preparation for the thesis defense.
 
 \section{Conclusion}
 \label{sec:conclusion}
