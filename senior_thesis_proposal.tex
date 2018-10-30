@@ -542,7 +542,8 @@ Materials also contain a user-set identification number to allow other objects t
 
 Objects are composed of geometric primitives -- \name\ supports only spheres, infinite planes, and triangles.
 Every object is recursively defined as a collection of sub-objects, or a primitive -- thus, a ``box'' object might contain four ``side'' objects when themselves contain two triangles.
-Each sub-object is associated with an offset from its parent. Thus, the data required for a geometry object definition is just an array of sub-objects and a position.
+Each sub-object is associated with an offset from its parent.
+Thus, the data required for a geometry object definition is just an array of sub-objects and a position.
 Every geometry object may have a material id -- if not specified, then the object's parent's material id is used instead.
 This material id dictates what material is used to scatter rays when they intersect with the object.
 Objects may also have an animation component -- a {\it movement path} -- identification number.
