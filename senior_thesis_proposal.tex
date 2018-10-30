@@ -160,7 +160,7 @@ More details on this process are given in Section ~\ref{sec:introduction:ncurses
 
 \begin{figure}[htb]
   \centering
-  \includegraphics[width=0.75\textwidth]{resources/checker_metal}
+  \includegraphics[width=0.8\textwidth]{resources/checker_metal}
   \caption{Example of proposed terminal output}
   \label{fig:checker_metal}
 \end{figure}
@@ -176,11 +176,12 @@ Ray-tracing has been used as the renderer of choice for photorealistic images si
 In the past, however, it has been reserved for non-real-time uses.
 For example, Figure ~\ref{fig:povray_render} is a render created by the POV-Ray engine \cite{povray}.
 POV-Ray can take between a few minutes to several hours to complete one single image depending on the processing power involved.
-However, there have been a few recent innovations that change this, such as NVIDIA's RTX hardware acceleration. Section~\ref{sec:method} provides more details on these advances, as well as an explanation of how ray-tracing will be utilized in \name.
+However, there have been a few recent innovations that change this, such as NVIDIA's RTX hardware acceleration.
+Section~\ref{sec:method} provides more details on these advances, as well as an explanation of how ray-tracing will be utilized in \name.
 
 \begin{figure}[htb]
   \centering
-  \includegraphics[width=0.75\textwidth]{resources/glasses_povray}
+  \includegraphics[width=0.8\textwidth]{resources/glasses_povray}
   \caption{POV-Ray render created by Gilles Tran \cite{povray2006render}}
   \label{fig:povray_render}
 \end{figure}
@@ -260,6 +261,7 @@ More details on the algorithm for ray-to-character translation is available in S
     \label{fig:unicode_mode_comparison2}
   \end{subfigure}
   \caption{Examples of Image Mode Output}
+  \label{fig:unicode_mode_comparison}
 \end{figure}
 
 \subsection{Terminal Output using \texttt{ncurses}}
@@ -281,23 +283,42 @@ This is not a priority, however, since it is not related to the rendering nature
 % Whenever possible, you should compare and contrast your approach with the ones that have been discussed in the past.
 % As you describe related papers, please make sure that you cite them properly~\cite{conrad-gecco-selection-study}.
 
+In this section, we will discuss some related work, detail how it informs \name's development, and show the failures and possible improvements of similar systems.
+First, we will conduct a high-level discussion of the first ray-tracing paper all the way to modern-day optimizations and innovations.
+Following that, we will discuss two Github projects, one of which has already been utilized to create the example figures such as Figure \ref{fig:unicode_mode_comparison}.
+
+
+\littlesection{The First Ray-Tracer}
+
 % To create an image, a ray-tracer first generates {\it eye-rays}, one for each pixel to render.
 % These rays have their origin at the camera, and a direction which causes the ray to pass through the pixel to render.
 % Each ray is then tested against all objects in the scene for intersection, and the intersection with the closest distance is chosen.
 % This was the only thing the original ray-traced shading algorithm \cite{appel1968some} did, after which the amount of illuminance incident on the point the ray hit, along with some information available from other algorithms (such as if the surface faced a light), dictated the level of darkness of that pixel.
+\todo{appel}
 
-\todo{
-paragraphs for:\\
-first ray tracing\\
-early reverse ray tracing\\
-whitted\\
-the rendering equation?\\
-acceleration structure\\
-distributed ray tracing\\
-stable ray tracing?\\
-TerminalImageViewer\\
-termloop\\
-}
+\littlesection{The Breakthrough}
+
+\todo{whitted}
+
+\littlesection{Formalization}
+
+\todo{the rendering equation}
+
+\littlesection{Accelerated Intersections}
+
+\todo{acceleration structures}
+
+\littlesection{Parallelization}
+
+\todo{GPU ray-tracing}
+
+\littlesection{TerminalImageViewer}
+
+\todo{}
+
+\littlesection{Gaming with \texttt{termloop}}
+
+\todo{}
 
 % rewrite above (use stuff on doc) and continue thread three
 
@@ -311,7 +332,8 @@ termloop\\
 The methods, algorithms, and techniques used to implement \name\ are discussed here.
 In Section~\ref{sec:method:algorithms} we detail most of the mathematics involved; core algorithms for the \texttt{ncurses} interface are also covered there.
 Software tools and languages utilized to build \name\ are discussed in Section~\ref{sec:method:software}.
-Finally, hardware interfaces, along with the current landscape of hardware availability, are covered in Section~\ref{sec:method:hardware}. Additionally, discussion on parrallelization is presented.
+Finally, hardware interfaces, along with the current landscape of hardware availability, are covered in Section~\ref{sec:method:hardware}.
+Additionally, discussion on parallelization is presented.
 
 \subsection{Algorithms and Mathematics}
 \label{sec:method:algorithms}
@@ -444,7 +466,8 @@ If neither algorithm is able to produce an acceptable image quality, and running
 The Quadrant Algorithm works with only four rays per character pixel.
 These four rays will sample each of the four quadrants of the character, and give color values.
 Once we have the four quadrant colors, we take the perceived brightness of each quadrant, using formula~\ref{equation:perceived_brightness}, where $C$ is the color in question \cite{finley2006hsp}.
-Using the translated values we calculate an average brightness for the entire character. Any quadrant which has a higher brightness is then considered ``on'', while any darker quadrants are ``off''.
+Using the translated values we calculate an average brightness for the entire character.
+Any quadrant which has a higher brightness is then considered ``on'', while any darker quadrants are ``off''.
 Thus we determine which character from the set \texttt{U+2596} -- \texttt{U+259F}, which is a subset of the Unicode block characters that consist of all combinations of character quadrants, best represents the brightness gradient of the character pixel.
 After this, we must determine the color of the foreground (``on'') and background (``off'') quadrants.
 This is simply the average color value of the relevant rays -- with this computed we have the colors and character to use for the character pixel.
@@ -492,41 +515,79 @@ As with the Quadrant Algorithm, there are some possible optimizations for this a
 \subsection{Software}
 \label{sec:method:software}
 
-\todo{intro to software descriptions}
+\name's implementation will be hosted on Github, a public platform for projects using the Git version control system.
+Travis CI \cite{travisci} -- a continuous integration system -- will be used for testing and environment management.
+Documentation will be handled by \texttt{doxygen} \cite{van2008doxygen} -- all external facing functions, methods, and classes will have a minimum of a few sentences of documentation.
+More details about the implementation tools are given in Section~\ref{sec:method:languages_and_libraries}.
+Additionally, Section~\ref{sec:method:data_handling} discusses some implementation specific practices for handling data.
 
-\subsubsection{Real-time Demonstrations}
-\label{sec:method:realtime_demo}
+\subsubsection{Data Handling}
+\label{sec:method:data_handling}
 
-Details on the individual scenes planned are given in Section~\ref{sec:evaluate}.
+Data for use in scenes and materials will be stored in plain text.
+This enables ease of use and human readability, as well as making scene editing extremely easy.
+Data storage will likely use the YAML format, leveraging a C/C++ library or similar resource to ease the implementation burden.
+The ideas described here are only informed guesses for how these entities should be represented; after the initial CPU ray-tracer implementation -- see Section~\ref{sec:schedule} -- this model may be improved.
+Notably, one possible improvement is known as {\it instancing}, and involves allowing multiple copies of the same geometry to reference the same underlying data.
 
-\littlesection{The Camera}
+\littlesection{Materials}
 
-\todo{}
+Materials are not fully user-specifiable -- instead, they simply reference a type, such as lambertian or dielectric, and a texture.
+Texture mapping is a complex topic that will require much more research, especially as implementation becomes a possibility.
+For now, solid textures will be the only supported texture.
+Some additional values such as metallic/reflectivity control specific aspects of the generated scattering function.
+Materials also contain a user-set identification number to allow other objects to apply the material to themselves.
 
-\littlesection{Object Representation}
+\littlesection{Objects}
 
-\todo{}
+Objects are composed of geometric primitives -- \name\ supports only spheres, infinite planes, and triangles.
+Every object is recursively defined as a collection of sub-objects, or a primitive -- thus, a ``box'' object might contain four ``side'' objects when themselves contain two triangles.
+Each sub-object is associated with an offset from its parent. Thus, the data required for a geometry object definition is just an array of sub-objects and a position.
+Every geometry object may have a material id -- if not specified, then the object's parent's material id is used instead.
+This material id dictates what material is used to scatter rays when they intersect with the object.
+Objects may also have an animation component -- a {\it movement path} -- identification number.
+Similar to materials, movement paths are simply a collection of world locations and a length of time to take to traverse those locations.
+In future versions of \name, these are likely to be removed in favor of total object control in the form of scripting integration.
 
-\littlesection{Scene Storage}
+\littlesection{Scene Description}
 
-\todo{}
+The scene description is a single file where all materials, objects, and movement paths in the scene are stored.
+At the top level it contains three lists: one of materials, another of objects, and a third of movement paths.
+One last special piece of data specific to the scene description is the camera description.
+This specifies the technical details of the camera such as focal length and field of view, as well as mechanical details such as its position and speed.
+The camera can also have a movement path defined, or optionally user control enabled.
+User control enables the user to move the camera around in real-time, fully experiencing the ray-traced scene around them.
 
-\subsubsection{Programming Languages and Libraries}
+
+\subsubsection{Programming Languages and Tools}
 \label{sec:method:languages_and_libraries}
 
-Details on the proposed implementation languages and libraries.
+With a large project such as \name, there are certain choices that must be made from a software development perspective.
+These choices inform how the project is modified, built, and eventually executed.
+In the case of \name, we chose to develop in the C++ language \cite{cpp14standard}, and use Gradle \cite{gradle} as the build system.
+Hardware APIs are covered in Section~\ref{sec:method:hardware}.
 
 \littlesection{C++}
 
-\todo{}
+The C++ language was chosen for three main reasons.
+First, the language has a huge ecosystem of low-level tools, with interfaces to libraries such as OptiX, CUDA, FORTRAN-implemented mathematics like Blitz++, and much more.
+This ensures that no matter the need, there is probably a library out there that will fill that need.
+Secondly, C++ allows low-level C-like programming while keeping abstractions such as objects available.
+Lastly, C++ is a reasonably fast language: with no virtual machine like Java or Kotlin, garbage collection is not a burden.
+Decades of work have gone into compiler toolchains such as \texttt{g++} and \texttt{clang}, enabling optimizations that would not be possible for newer languages.
 
-\littlesection{\texttt{\bf ncurses}}
-
-\todo{}
+\name\ will attempt to keep most of its implementation to a C-compatible level, using classes and greater abstractions only as necessary.
+This ensures that overhead will be minimal, as well as guaranteeing readability for the eventual open source release.
+Advanced features of C++ such as templating will be avoided so as to keep the knowledge entry barrier low.
+Finally, all code in \name's implementation will conform to the Google C++ style guide \cite{googleStyleGuide}.
 
 \littlesection{Gradle}
 
-\todo{}
+Gradle is an opinionated build system that enables fully customizable tasks written in Java or Groovy.
+It can be used to compile C++ code into a runnable executable using its Software Model.
+This model allows the specification of specific executables and interdependent components, with sensible default source code locations.
+Gradle efficiently manages long linking or dependency lists, without resorting to macro infested and variable filled makefiles; it also handles header inclusions seamlessly, without dealing with relative path issues.
+Gradle can even automatically retrieve dependencies if they are published as a maven artifact.
 
 
 \subsection{Hardware}
@@ -538,31 +599,68 @@ Only recently has ray-tracing even been able to achieve real-time levels of perf
 The largest innovator in this space, GPU chip design company NVIDIA, released its RTX series of GPUs that have hardware support for ray-tracing.
 However, although fascinating, this proposal will not focus on RTX hardware, since its spread is slow due to the high early adoption cost.
 
-The main technical research for hardware acceleration will be done on the OptiX API \cite{parker2010optix}, an interface developed for current generation NVIDIA GPUs that enables GPU-accelerated ray-object intersection calculations in a programmable graphics pipeline.
+The main technical research for hardware acceleration will be done on the OptiX API \cite{parker2010optix}, discussed in Section~\ref{sec:method:optix}.
 The main goals of this research are to understand and use the technologies already available for non-real-time ray-tracing to do real-time work.
-Although a CPU-only ray-tracer is completely possible, and likely the first step in embarking on the creation of \name, it is not likely to be performant enough for real-time graphics.
-Therefore leveraging either CUDA (a compute API for NVIDIA GPUs \cite{nvidia2011cuda}) directly, or utilizing OptiX will be required.
+Hardware testing will be done on an Intel Core i7 4770k CPU and NVIDIA Geforce GTX 980Ti.
 
 \subsubsection{GPU vs. CPU}
+\label{sec:method:gpu_vs_cpu}
 
-\todo{}
+Although a CPU-only ray-tracer is completely possible, and will be the first step in embarking on the creation of \name, it is not likely to be performant enough for real-time graphics.
+To reach this performance, the ray-tracer must take less than $\frac{1}{f\!\!ps}$ seconds to render a single image.
+For $30$ frames per second, the minimum required for real-time fluid animation, \name\ must render an image every $33$ milliseconds.
+Therefore leveraging either CUDA (a compute API for NVIDIA GPUs \cite{nvidia2011cuda}) directly, or utilizing OptiX will likely be required.
+
+The main advantage to using a GPU instead of CPU is the massive parallelization possible -- GPUs often have hundreds to thousands of processor cores, whereas a standard CPU could have around eight.
+Since ray-tracing is an inherently parallelizable algorithm, taking advantage of these extra cores provides massive boosts to performance, since many more rays are able to be simulated at once.
+The problem is interfacing with the highly complex GPU architecture; often done through a shader program instead of some general purpose language.
+Shader programs are bits of programmable code that is inserted between fixed operations such as vertex interpolation.
+Since ray-tracing requires a completely different set of fixed operations, namely ray creation and intersection testing, it is not possible to use traditional methods.
+Instead, a new interface must be used, such as the afore mentioned OptiX or CUDA.
 
 \subsubsection{OptiX}
+\label{sec:method:optix}
 
-\todo{}
+OptiX is an API interface developed for current generation NVIDIA GPUs that enables GPU-accelerated ray-object intersection calculations in a programmable graphics pipeline \cite{parker2010optix}.
+OptiX allows user-defined single-ray {\it programs} to be compiled into a single program that runs on the GPU.
+These programs are written in the PTX language.
+Also available are acceleration structure implementations such as BVH.
+Additionally, lightweight scene representation formats are defined and usable, although are not required for use of the main API.
+
+Further practical research on the uses and implementation of OptiX is required, especially on the topic of C++ to PTX transpilation.
+Additional research on the source code of OptiX itself may be useful as well, even if \name\ does not eventually use OptiX as an API.
 
 \subsubsection{CUDA}
+\label{sec:method:cuda}
 
-\todo{}
+Utilizing the massive parallel computation power of a GPU can be difficult -- in fact, before CUDA's release in 2007, there was no well defined way to do so programmatically.
+CUDA is an API and computing platform that enables massively parallel computations.
+A special extension of C++, known as CUDA C/C++, can be compiled with {\it nvcc}, a custom LLVM-based C/C++ compiler.
+This extension enables library support for GPU accelerated multi-threading, physics, and linear algebra, along with many implementations of common data transformation algorithms.
+A significant limitation, especially in the field of ray-tracing, is that performance is significantly effected for inherently divergent tasks -- tasks which do not consistently follow the same control flow -- such as traversing an acceleration structure.
 
 
 \section{Evaluation}
 \label{sec:evaluate}
 
-% Explain what steps you will take to evaluate your proposed method. If you intend
-% to conduct experiments, then you must clearly define your evaluation metrics.
+% Explain what steps you will take to evaluate your proposed method.
+% If you intend to conduct experiments, then you must clearly define your evaluation metrics.
 
-The first step in evaluating a ray-tracer is to get the output in an versatile format -- for \name, a debug mode called {\it \texttt{ppm} mode} will generate image files in portable pixmap format.
+Evaluation and testing of a graphics engine is a difficult proposition -- it often involves extremely subjective reasoning, especially as to the realism of an algorithm.
+Given it's subjectiveness, some researchers use paired-comparison and rating-scale experiments \cite{kuang2007evaluating}.
+These experiments generally ask observers to rate or compare the accuracy of some generated image.
+\name\ will not be using these methods, as its purpose is not photorealistic graphics -- although adequate realism is expected -- but instead the unique pixelated style, as well as easy external use.
+
+The original retro pixelated style has many critics and advocates, as can be seen in popular video game culture.
+Therefore an observer-based test is likely to be heavily biased.
+Instead of a comparison test by many participants, simple ``adequate realism'' tests will be conducted during development to detect bugs and focus implementation in the correct direction.
+Descriptions of these tests, along with details on code testing, are available in Section~\ref{sec:evaluate:testing}.
+
+
+\subsection{Portable Pixmap Output Mode}
+\label{sec:evaluate:ppm_mode}
+
+The first step in evaluating and testing a ray-tracer is to get the output in an versatile format -- for \name, a debug mode called {\it \texttt{ppm} mode} will generate image files in portable pixmap format.
 This mode will be a different interface in addition to the \texttt{ncurses} character output modes, allowing much higher resolution output for testing.
 It is unlikely that this will be real-time capable, but render times for \texttt{ppm} images with millions of fragments will serve as good benchmarks for algorithm optimizations.
 The image format \texttt{ppm} was chosen for it's human readability along with ease of use for development -- it has both ASCII and binary forms, with the ASCII being more useful in our case.
@@ -596,9 +694,14 @@ The format is extremely simple; a \texttt{ppm} file is shown in Figure~\ref{fig:
 Using this \texttt{ppm} image output mode will enable graphical quality comparisons, testing, and bug-fixing.
 It will also provide output and results data for output-based regression testing, to ensure that any changes are purposeful.
 Lastly, \texttt{ppm} mode will be used to test the fidelity of \name's ray-to-character translation algorithm against other available algorithms in programs such as TerminalImageViewer by providing a single, identical input image for translation.
+Both algorithms will be run, and the resulting character field evaluated for differences.
 
-In addition to the \texttt{ppm} mode, demonstration scenes will also be built to enable real-time testing of the ray-tracing algorithm and \name's associated systems.
-These scenes will essentially act as integration tests, as well as provide demonstrations of \name's capabilities.
+
+\subsection{Demonstration Scenes}
+\label{sec:evaluate:demo_scenes}
+
+In addition to \texttt{ppm} mode, demonstration scenes will also be built to enable real-time testing of the ray-tracing algorithm and \name's associated systems.
+These scenes will provide data for ``adequate realism'' tests as well as provide demonstrations of \name's capabilities.
 The final project will include at least the following scenes, but may be more extensive.
 
 \begin{itemize}
@@ -610,9 +713,9 @@ The final project will include at least the following scenes, but may be more ex
   \item Environment Exploration
 \end{itemize}
 
-The first two scenes are famous ray-tracing example scenes and will be used to benchmark the performance of \name\ against other ray-tracing engines, such as OctaneRender or Blender.
+The first two scenes are famous ray-tracing reference scenes and will be used to benchmark the performance of \name\ against other ray-tracing engines, such as OctaneRender or Blender.
 With the addition of the {\texttt{ppm}} image mode, output images will be visually compared to detect errors in visual effects such as specular reflections.
-The other three are demo scenes designed to showcase certain aspects of \name.
+The other three scenes are demonstrations designed to showcase certain aspects of \name.
 The Shadow Demo scene is a simple scene similar to NVIDIA's RTX shadow demo, seen in Figure~\ref{fig:nvidia_shadows}.
 It will demonstrate soft shadows and show the limitations of \name's ray-tracer, since, at least at the moment, only point lights will be supported.
 When this scene is implemented, and if there is time in the development schedule, area lights may be implemented through multiple random sampling.
@@ -629,10 +732,31 @@ The Moving Object scene will be modeled after a typical Cornell Box, however the
 This will stress the ray-tracer and demonstrate the real-time shadows, lighting, and rendering to the fullest extent.
 Finally, the Environment Exploration scene is a somewhat nebulous idea -- it is a scene where the user will be able to ``explore'' and move the camera around to experience a wider area.
 Currently envisioned as a set of complex models of a street corner or otherwise realistic location, it will be the stress test for \name.
-As many thousands of objects and possibly millions of rays are computed per second, this scene will ensure that the ray-tracing algorithm is well-designed and optimized.
+As many thousands of objects and possibly millions of rays are computed per second, this scene will ensure that the ray-tracing algorithm is well-designed and optimized, and if an acceleration structure is implemented, it performs well.
 
 Along with the scene demonstrations there will also be material demonstrations -- although simple in nature, they will show off the different implementations of lambertian, dielectric, and metal materials, along with other possible effects such as glass, tessellation, and ray-traced bump mapping.
-Many of these effects are contingent upon available development time, however, at least the lambertian and metal demonstrations should be available in the final project.
+Many of these effects are contingent upon available development time; however, at least the lambertian and metal demonstrations will be available in the final project.
+
+
+\subsection{Testing}
+\label{sec:evaluate:testing}
+
+Testing will focus on reference image comparison, specifically with reference images generated by {\it Cycles}, the rendering engine used by the Blender modeling tool \cite{blender}.
+These reference images will be compared with the same scene rendered with \name.
+Visual effects such as reflections, specular highlights, transparency, shadows, and ambient occlusion will be examined in both images to determine if there is any loss of quality with \name's ray-tracing algorithm.
+Some loss of quality is acceptable; however, anything that could be noticed by a viewer as appearing unrealistic or otherwise not making physical sense violates the ``adequate realism'' criterion.
+An example of such a violation might be ``fireflys'' -- pixel abnormalities that are often colored black or white instead of the correct color -- caused by numerical errors.
+Additional violations may occur in object seams or other areas where geometry is not fully defined -- these situations should be fixed if and when they occur.
+
+The reference images and \name\ output will also be mathematically compared by highlighting portions of the images that are not pixel-perfect copies (often referred to as ``diffing'').
+This is likely to have many false positive bug identifications, as small variations can easily happen, but could point out possible inaccuracies that do not appear physically incorrect but may still be a bug or unintended side effect.
+
+Code testing will use the {\it Google C++ Testing Framework} for unit testing \cite{googletest}.
+Code coverage should cover all mathematics routines at minimum, and greater than $90\%$ algorithm coverage is the goal.
+CUDA or OptiX code testing will be done with a mix of CPU-side Google Test code and custom test handlers for GPU testing.
+Unit testing for the \texttt{ncurses} interface should also be greater than $90\%$ if possible, however additional research into this area will be required, as mocking the terminal may prove to be more work than it is worth.
+Lastly, test integration with Travis CI is also a goal.
+Travis CI environment tests will also be used for different terminal types if additional research determines this is possible.
 
 \section{Research Schedule}
 \label{sec:schedule}
@@ -642,7 +766,7 @@ Many of these effects are contingent upon available development time, however, a
 
 Table~\ref{worktable} proposes a schedule for the implementation and research work needed to complete \name.
 First, a CPU implementation of the recursive ray-tracing algorithm will be developed, at first tested in \texttt{ppm} output mode.
-Then, as the ray-tracing code grows to a testable state, the interface to \texttt{ncurses} will be developed.
+Then, as the ray-tracing code grows to a testable state, the \texttt{ncurses} interface will be developed.
 This involves implementing the ray-to-character translation algorithm, as well as standardizing an interface with which another render engine (specifically the future GPU ray-tracer) can interface with the displayed terminal image.
 
 \begin{table}[htb]
@@ -682,9 +806,8 @@ Finally, end result testing and graphical comparisons will be conducted and docu
 \section{Conclusion}
 \label{sec:conclusion}
 
-% Provide a summary of your proposed research and suggest the impact that it may
-% have on the discipline of computer science. If possible, you may also suggest
-% some areas for future research.
+% Provide a summary of your proposed research and suggest the impact that it may have on the discipline of computer science.
+% If possible, you may also suggest some areas for future research.
 
 \todo{write conclusion}
 
