@@ -640,6 +640,8 @@ A special extension of C++, known as CUDA C/C++, can be compiled with {\it nvcc}
 This extension enables library support for GPU accelerated multi-threading, physics, and linear algebra, along with many implementations of common data transformation algorithms.
 A significant limitation, especially in the field of ray-tracing, is that performance is significantly effected for inherently divergent tasks -- tasks which do not consistently follow the same control flow -- such as traversing an acceleration structure.
 
+\name\ may use CUDA C++ to perform ray-tracing intersection tests and dispatch ray simulations.
+If OptiX, a more ray-tracing specific API, does not work out due to implementation issues or other reasons, CUDA is the fall-back resource.
 
 \section{Evaluation}
 \label{sec:evaluate}
