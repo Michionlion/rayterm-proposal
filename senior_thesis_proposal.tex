@@ -753,6 +753,10 @@ Additional violations may occur in object seams or other areas where geometry is
 
 The reference images and \name\ output will also be mathematically compared by highlighting portions of the images that are not pixel-perfect copies (often referred to as ``diffing'').
 This is likely to have many false positive bug identifications, as small variations can easily happen, but could point out possible inaccuracies that do not appear physically incorrect but may still be a bug or unintended side effect.
+Additional testing will focus on render times -- the time it takes a rendering engine to complete an image -- specifically comparing \name\ to OctaneRender \cite{octane} and its real-time ray-tracing algorithm.
+This will involve creating identical scenes and then gathering and comparing performance data for both engines.
+In most cases, since \name\ will be implementing only a subset of the effects OctaneRender uses, it should be faster.
+As a counter-point, however, OctaneRender is highly optimized and thus may have the edge in raw performance for complex scenes.
 
 Code testing will use the {\it Google C++ Testing Framework} for unit testing \cite{googletest}.
 Code coverage should cover all mathematics routines at minimum, and greater than $90\%$ algorithm coverage is the goal.
@@ -812,7 +816,22 @@ Finally, end result testing and graphical comparisons will be conducted and docu
 % Provide a summary of your proposed research and suggest the impact that it may have on the discipline of computer science.
 % If possible, you may also suggest some areas for future research.
 
-\todo{write conclusion}
+\name\ is a complex system, the implementation and design of which will not be fully known until initial testing and research is completed in the form of the CPU ray-tracer.
+The proposed system will support real-time 3D scene viewing through a terminal emulator such as Konsole.
+This will made possible by leveraging one of the hardware interfaces discussed in Section~\ref{sec:method:hardware} to compute ray-surface intersections in a highly parallelized manner on a GPU.
+Ray-to-character translation algorithms are also needed to transform the rendered image into Unicode characters.
+These algorithms, along with the \texttt{ncurses} library, enable \name's treatment of a terminal as an image canvas.
+
+The development of \name\ will proceed at first in an experimental stage, while the abstractions and foundation for ray-tracing in general are created.
+The end result of this stage is a working CPU ray-tracer, which may or may not be capable of real-time rendering.
+The second and final stage involves rewriting the ray-tracer to utilize GPU compute power, enabling faster render times and real-time performance.
+The lessons learned from the experimental stage are crucial for a good design and implementation at this point.
+The end result of this stage is ultimate goal of \name\ -- a fully real-time capable ray-tracing engine, rendering 30 Unicode character images per second to a terminal window.
+
+After the initial development period discussed in Section~\ref{sec:schedule}, all contributions to \name\ development will be welcome.
+In the pursuit of maintaining good open-source readability and ease of development, documentation will be a priority throughout the initial implementation process.
+Additionally, tight integration with Github and Travis CI will ensure the integrity of public contributions.
+We hope that future projects will find \name\ inspiring and useful, whether as an engine or as a jumping-off point for real-time ray-tracing and terminal-based games.
 
 
 \bibliographystyle{plain}
