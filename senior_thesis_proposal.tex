@@ -132,7 +132,7 @@
 Over the many years of innovation in the field of computer graphics, advances in rendering have led to massive increases in the fidelity of engaging, satisfying, and realistic computer visualizations.
 \name\ is a new and unique entry into the ranks of rendering engines, and makes its own contributions to the field of computer graphics.
 While harkening back to the retro aesthetics of the seventies and eighties, \name\ embraces new advances in computing power to bring fully ray-traced visuals to an old screen -- the terminal.
-Using Unicode block characters to simulate pixels and a ray-tracer written in C++, a fully three dimensional scene will be rendered, complete with lighting, shadows, and physically-based materials.
+Using Unicode block characters to simulate pixels and a ray-tracer written in C++, \name\ will render a fully three-dimensional (3D) scene, complete with lighting, shadows, and physically-based materials.
 \name\ can be used as an engine for terminal-based 3D tools, visualizations, games, and more; it will be fully open-source and ready for integration into other projects.
 
 \end{quote}
@@ -314,8 +314,8 @@ This is not a priority, however, since it is not related to the rendering nature
 % As you describe related papers, please make sure that you cite them properly~\cite{conrad-gecco-selection-study}.
 
 In this section, we will discuss related research papers, detail how they inform \name's development, and show the improvements of \name\ over similar systems.
-First, we will conduct a high-level discussion of the first ray-tracing paper all the way to modern-day optimizations and innovations.
-Following that, we will discuss two Github projects, one of which has already been utilized to create the example figures such as Figure \ref{fig:unicode_mode_comparison}.
+First, we will conduct a high-level discussion of the first ray-tracing paper through to basic details on modern-day optimizations.
+Following that, we will discuss two Github projects, one of which has already been utilized to create some of the figures in this document, such as Figure \ref{fig:unicode_mode_comparison}.
 
 
 \littlesection{The First Ray-Tracer}
@@ -323,7 +323,9 @@ Following that, we will discuss two Github projects, one of which has already be
 The very first ray-tracing algorithm was developed by Arthur Appel in his 1968 paper {\it Some techniques for shading machine renderings of solids} \cite{appel1968some}.
 His algorithm is now known as a ray casting algorithm -- it does not follow the approach we have seen so far.
 Instead, rays are traced from a point light source to the object being shaded, and a plus symbol of varying size is rendered at that location, depending on the intensity of light at that point.
-When a photographic negative is taken, dark spots missed by the rays are now ``in shadow'', as the color levels were inverted. Today, Appel's work is not considered the first real ray-tracing algorithm, as it is almost in a different class. However, his work informed much of the following research, especially his ideas and mathematics on light intensity.
+When a photographic negative is taken, light spots that were not hit by the rays (thereby darkening them) are now ``in shadow'', as the color levels were inverted.
+Today, Appel's work is not normally considered a real ray-tracing algorithm.
+However, his work informed much of the following research, especially his ideas and mathematics on light intensity.
 
 \littlesection{The Breakthrough}
 
@@ -358,23 +360,23 @@ Keeping this mathematical basis in mind as our implementation is built is critic
 \littlesection{Accelerated Intersections}
 
 Ray-tracing requires intersection tests with every object in the scene.
-If it were possible to drastically reduce the number of tests completed for each ray, perhaps by only testing the ray against objects in its general vicinity, massive speed gains would emerge.
-As it turns out, this was first thought of right after Whitted's original paper.
+If it were possible to drastically reduce the number of tests computed for each ray, perhaps by only testing the ray against objects in its general vicinity, massive speed increases would emerge.
+As it turns out, this was first explored right after Whitted's original paper.
 The Bounding Volume Hierarchy (BVH) acceleration structure was proposed in Steven Rubin and Turner Whitted's 1980 paper {\it A 3-dimensional representation for fast rendering of complex scenes} \cite{rubin1980}.
 
-A BVH essentially groups objects into hierarchial organizations, with each group covering a larger area than the groups inside it.
-Each group has a ``bounding volume'', a geometric primitive that encloses all members of that group.
-Ray-tracing intersections are done with the root group first, progressing down the hierarchy and potentially skipping the vast majority of geometry in the scene, thereby speeding up computation.
-There have been numerous improvements to this idea, however BVHs continue to be an easy-to-implement and efficient acceleration structure \cite{prunier2017bvh}, and if there is development time, some form of BVH will be implemented in \name.
+A BVH essentially groups objects into hierarchical organizations, with each group covering a larger area than the groups inside it.
+Each group has a {\it bounding volume}, a geometric primitive that encloses all members of that group.
+Ray-tracing intersections are done with the root group's bounding volume first, then progress down the hierarchy and potentially skip the vast majority of geometry in the scene, thereby speeding up computation.
+There have been numerous improvements to this idea; however, BVHs continue to be an easy-to-implement and efficient acceleration structure \cite{prunier2017bvh}, and if there is development time, some form of BVH will be implemented in \name.
 
 \littlesection{Parallelization}
 
-Ray-tracing is inherently parallelizable, because each ray-tree is independent -- rays cannot collide, and one fragemenet's ray-tree does not affect another fragment's ray-tree.
-Thus, there has been many opimizations that target enhanced hardware acceleration to enable massively parrallel ray-tracing.
-The first example of this was {\it Design and Analysis of a Parallel Ray Tracing Computer}, a 1983 paper by John Cleary and others.
+Ray-tracing is inherently parallelizable, because each ray-tree is independent -- rays cannot collide, and one fragment's ray-tree does not affect another fragment's ray-tree.
+Thus, there have been many opimizations that target enhanced hardware acceleration to enable massively parrallel ray-tracing.
+The first example of this was {\it Design and Analysis of a Parallel Ray Tracing Computer}, a 1983 paper by John Cleary and others \cite{cleary1983design}.
 In it, Cleary describes a computing system that is functionally similar to the Grapics Processing Units (GPUs) available today.
-They were even able to build small prototypes, but calculated that a full blown system would cost \$50 million and be able to generate 1000 by 1000 images in 0.15 seconds.
-Sadly, 1983 chip technology had not yet progressed to the point where such a large multi-core processor was feasable.
+They were even able to build small prototypes, but calculated that a full blown system would cost \$50 million and be able to generate 1000 by 1000 pixel images in 0.15 seconds.
+Sadly, 1983 chip technology had not yet progressed to the point where such a large multi-core processor was feasible.
 
 However, all was not lost.
 Much of the research done in this area led to the design of systems such as OptiX \cite{parker2010optix} (which we describe in Section~\ref{sec:method:hardware}), enabling projects like \name\ to benefit from the massive speed increases estimated by early papers.
@@ -383,25 +385,23 @@ Instead of a \$50 million monstrosity, relatively small GPU chips capable of the
 \littlesection{Terminal Images}
 
 A small program available on Github was the original inspiration for some details of \name.
-Called TerminalImageViewer (\texttt{tiv}) \cite{tivGithub}, it uses RGB ANSI codes and Unicode block graphic characters to display images in a terminal window.
+Called TerminalImageViewer (\texttt{tiv}) \cite{tivGithub}, it uses RGB ANSI escape codes and Unicode block characters to display images in a terminal window.
 \name\ will use the same ideas to produce its own animated output.
 Many of the example figures in this proposal were also created using \texttt{tiv}.
 The algorithm behind \texttt{tiv} is a direct inspiration for the ray-to-character algorithms described in Section~\ref{sec:method:ray_character_algorithm}.
-
 \name, however, improves upon TerminalImageViewer in a single, incredibly impactful way: the graphics produced are animated.
-This does not even mention the many other differences that exist between \texttt{tiv} and \name.
 Fundamentally, \texttt{tiv} and \name\ are similar only in output format, while the purpose and internal workings are generally dissimilar.
 
 \littlesection{Gaming with Termloop}
 
-A stated goal of \name\ is to support future games that use the terminal as a graphical display.
+A stated goal of \name\ is to support future games that might use the terminal as a graphical display.
 Games have utilized the terminal as a display mechanism for a long time -- text based adventure games were built with a terminal in mind, and RPGs also got their start with randomly generated levels displayed in 2D in a terminal window.
 Termloop is a game engine built for the terminal \cite{termloop}.
-It has a similar purpose to \name\ -- namely, facilitate game creation in the terminal.
+It has a similar purpose to \name\ -- namely, to facilitate game creation in the terminal.
 However, Termloop, like all other terminal game engines available today, has one glaring limitation: it is not 3D.
-This one differentiating factor is huge; it means that no games can ever be made that don't fit into the strict field of two-dimensional games.
+This one differentiating factor is huge; it means that no games can ever be made that don't fit into the strict field of two-dimensional graphics.
 \name\ changes that, by allowing full 3D rendering in the terminal.
-It doesn't, of course, have the other niceties such as collision detection, but the ultimate goal of \name\ -- beyond the stated goals in this proposal -- is to grow to the same level of support for 3D games that Termloop has for 2D games.
+It doesn't have the other niceties such as collision detection, but the ultimate goal of \name\ -- beyond the stated goals in this proposal -- is to grow to provide the same level of support for 3D games that Termloop has for 2D games.
 
 
 \section{Method of Approach}
@@ -693,8 +693,8 @@ An opinionated build system such as Gradle also specifies sensible defaults for 
 This is why Gradle was chosen as the build system for \name.
 Gradle can be used to compile C++ code into an executable for distribution or testing using its Software Model feature.
 This feature allows the specification of executables and interdependent components, with sensible default source code and binary locations.
-Gradle efficiently manages long linking or dependency lists, without resorting to macro infested and variable filled makefiles; it also handles header inclusions seamlessly, without dealing with relative path issues.
-Gradle can even automatically retrieve dependencies if they are published as a maven artifact.
+Gradle efficiently manages long linking or dependency lists, without resorting to macro-infested and variable-filled makefiles; it also handles header inclusions seamlessly, without dealing with relative path issues.
+Gradle can even automatically retrieve dependencies if they are published as a Maven artifact.
 
 
 \subsection{Hardware}
@@ -749,7 +749,7 @@ This extension enables library support for GPU accelerated multi-threading, phys
 A significant limitation, especially in the field of ray-tracing, is that performance is significantly effected for inherently divergent tasks -- tasks which do not consistently follow the same control flow -- such as traversing an acceleration structure.
 
 \name\ may use CUDA C++ to perform ray-tracing intersection tests and dispatch ray simulations.
-If OptiX, a more ray-tracing specific API, does not work out due to implementation issues or other reasons, CUDA is the fall-back resource.
+If OptiX, a more ray-tracing-specific API, does not work out due to implementation issues or other reasons, CUDA is the fall-back resource.
 
 \section{Evaluation}
 \label{sec:evaluate}
@@ -937,7 +937,7 @@ Finally, implementation of \name's actual GPU ray-tracing engine will begin in e
 From this point onward, implementation and demonstration will be the primary goals.
 By late February, final demonstration scene creation should be wrapping up and material demonstrations should be well on their way to completion.
 The tempo of thesis chapter writing picks up early March, with discussions of the various new GPU-based techniques used for the GPU ray-tracer as the primary focus.
-Finally, end result testing and graphical comparisons will be conducted and documented, along with preparation for the thesis defense.
+After everything else is complete, end result testing and graphical comparisons will be conducted and documented, along with preparation for the thesis defense.
 
 \section{Conclusion}
 \label{sec:conclusion}
