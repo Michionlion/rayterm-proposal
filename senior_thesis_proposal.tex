@@ -704,22 +704,24 @@ If OptiX, a more ray-tracing specific API, does not work out due to implementati
 Evaluation and testing of a graphics engine is a difficult proposition -- it often involves extremely subjective reasoning, especially as to the realism of an algorithm.
 Given it's subjectiveness, some researchers use paired-comparison and rating-scale experiments \cite{kuang2007evaluating}.
 These experiments generally ask observers to rate or compare the accuracy of some generated image.
-\name\ will not be using these methods, as its purpose is not photorealistic graphics -- although adequate realism is expected -- but instead the unique pixelated style, as well as easy external use.
+\name\ will not be using these methods, because its main purpose is not photorealistic graphics -- although adequate realism is expected -- but instead a unique pixelated style, real-time display, and easy extension.
 
 The original retro pixelated style has many critics and advocates, as can be seen in popular video game culture.
-Therefore an observer-based test is likely to be heavily biased.
-Instead of a comparison test by many participants, simple ``adequate realism'' tests will be conducted during development to detect bugs and focus implementation in the correct direction.
+Therefore, an observer-based test is likely to be heavily biased.
+Instead of a comparison test with many participants, simple ``adequate realism'' tests will be conducted throughout development to detect bugs and focus implementation in the correct direction.
 Descriptions of these tests, along with details on code testing, are available in Section~\ref{sec:evaluate:testing}.
 
 
 \subsection{Portable Pixmap Output Mode}
 \label{sec:evaluate:ppm_mode}
 
-The first step in evaluating and testing a ray-tracer is to get the output in an versatile format -- for \name, a debug mode called {\it \texttt{ppm} mode} will generate image files in portable pixmap format.
-This mode will be a different interface in addition to the \texttt{ncurses} character output modes, allowing much higher resolution output for testing.
-It is unlikely that this will be real-time capable, but render times for \texttt{ppm} images with millions of fragments will serve as good benchmarks for algorithm optimizations.
-The image format \texttt{ppm} was chosen for it's human readability along with ease of use for development -- it has both ASCII and binary forms, with the ASCII being more useful in our case.
-The format is extremely simple; a \texttt{ppm} file is shown in Figure~\ref{fig:ppm_code}, with Figure~\ref{fig:ppm_image} being its output.
+The first step in evaluating and testing a ray-tracer is to get the output in an versatile format.
+\name\ will have a debug mode called {\it \texttt{ppm} mode} that can generate image files in the portable pixmap format.
+This mode will be a different interface alongside the \texttt{ncurses} interface, allowing much higher resolution output for testing.
+It is unlikely that this mode will be real-time capable, but render times for \texttt{ppm} images with millions of fragments will serve as good benchmarks for algorithm optimizations.
+The image format \texttt{ppm} was chosen for its human readability along with ease of use for development.
+There are many versions of the \texttt{ppm} format -- \name\ will be using the ASCII varient.
+The file content format is extremely simple: a \texttt{ppm} file is shown in Figure~\ref{fig:ppm_code}, with Figure~\ref{fig:ppm_image} being its output.
 
 \begin{figure}[htb]
   \begin{subfigure}[htb]{0.5\textwidth}
@@ -747,7 +749,7 @@ The format is extremely simple; a \texttt{ppm} file is shown in Figure~\ref{fig:
 \end{figure}
 
 Using this \texttt{ppm} image output mode will enable graphical quality comparisons, testing, and bug-fixing.
-It will also provide output and results data for output-based regression testing, to ensure that any changes are purposeful.
+It will also provide output and results data for output-based regression testing to ensure that any changes are purposeful.
 Lastly, \texttt{ppm} mode will be used to test the fidelity of \name's ray-to-character translation algorithm against other available algorithms in programs such as TerminalImageViewer by providing a single, identical input image for translation.
 Both algorithms will be run, and the resulting character field evaluated for differences.
 
@@ -768,11 +770,31 @@ The final project will include at least the following scenes, but may be more ex
   \item Environment Exploration
 \end{itemize}
 
-The first two scenes are famous ray-tracing reference scenes and will be used to benchmark the performance of \name\ against other ray-tracing engines, such as OctaneRender or Blender.
+The first two scenes are famous ray-tracing reference scenes and will be used to benchmark the performance of \name\ against other ray-tracing engines, such as OctaneRender \cite{octane} or Blender \cite{blender}.
+Figure~\ref{fig:reference_scenes} shows versions of both scenes.
+Notice that the original Whitted's sphere does not have internal glass reflections -- this was a limitation of his ray-tracing algorithm.
+
+\begin{figure}[htb]
+  \centering
+  \begin{subfigure}[htb]{0.48\textwidth}
+    \includegraphics[width=\textwidth]{resources/whitted_original}
+    \caption{Original Whitted's Sphere figure \cite{whitted1980improved}}
+  \end{subfigure}
+  \hspace{1.25em}
+  \begin{subfigure}[htb]{0.42\textwidth}
+    \includegraphics[width=\textwidth]{resources/cornell_box}
+    \caption{Cornell Box by Kari Kivisalo \cite{cornell2003render}}
+  \end{subfigure}
+  \caption{Classic ray-tracing reference scenes}
+  \label{fig:reference_scenes}
+\end{figure}
+
+
 With the addition of the {\texttt{ppm}} image mode, output images will be visually compared to detect errors in visual effects such as specular reflections.
 The other three scenes are demonstrations designed to showcase certain aspects of \name.
 The Shadow Demo scene is a simple scene similar to NVIDIA's RTX shadow demo, seen in Figure~\ref{fig:nvidia_shadows}.
-It will demonstrate soft shadows and show the limitations of \name's ray-tracer, since, at least at the moment, only point lights will be supported.
+It will demonstrate soft shadows and show the limitations of \name's ray-tracer.
+Since only point lights will be supported at this point, this scene will not look as realistic as Figure~\ref{fig:nvidia_shadows}.
 When this scene is implemented, and if there is time in the development schedule, area lights may be implemented through multiple random sampling.
 This simple addition to recursive ray-tracing simply adds more shadow rays to each scatter, randomly spread between any area lights in the scene.
 
@@ -783,11 +805,11 @@ This simple addition to recursive ray-tracing simply adds more shadow rays to ea
   \label{fig:nvidia_shadows}
 \end{figure}
 
-The Moving Object scene will be modeled after a typical Cornell Box, however the main point of the scene will be object and light source movement -- animated in real time.
+The Moving Object scene will be modeled after a typical Cornell Box scene, however, the main point of the scene will be object and light source movement in real time.
 This will stress the ray-tracer and demonstrate the real-time shadows, lighting, and rendering to the fullest extent.
-Finally, the Environment Exploration scene is a somewhat nebulous idea -- it is a scene where the user will be able to ``explore'' and move the camera around to experience a wider area.
+Finally, the Environment Exploration scene is a scene where the user will be able to ``explore'' and move the camera around to experience a wider area.
 Currently envisioned as a set of complex models of a street corner or otherwise realistic location, it will be the stress test for \name.
-As many thousands of objects and possibly millions of rays are computed per second, this scene will ensure that the ray-tracing algorithm is well-designed and optimized, and if an acceleration structure is implemented, it performs well.
+As many thousands of objects and possibly millions of rays are computed per second, this scene will ensure that the ray-tracing algorithm is well-designed and optimized, and if an acceleration structure is implemented, that structure performs adequately.
 
 Along with the scene demonstrations there will also be material demonstrations -- although simple in nature, they will show off the different implementations of lambertian, dielectric, and metal materials, along with other possible effects such as glass, tessellation, and ray-traced bump mapping.
 Many of these effects are contingent upon available development time; however, at least the lambertian and metal demonstrations will be available in the final project.
@@ -800,11 +822,12 @@ Testing will focus on reference image comparison, specifically with reference im
 These reference images will be compared with the same scene rendered with \name.
 Visual effects such as reflections, specular highlights, transparency, shadows, and ambient occlusion will be examined in both images to determine if there is any loss of quality with \name's ray-tracing algorithm.
 Some loss of quality is acceptable; however, anything that could be noticed by a viewer as appearing unrealistic or otherwise not making physical sense violates the ``adequate realism'' criterion.
-An example of such a violation might be ``fireflys'' -- pixel abnormalities that are often colored black or white instead of the correct color -- caused by numerical errors.
+An example of such a violation might be ``fireflys'' -- pixel abnormalities often caused by numerical errors that result in pure black or white pixels.
 Additional violations may occur in object seams or other areas where geometry is not fully defined -- these situations should be fixed if and when they occur.
 
 The reference images and \name\ output will also be mathematically compared by highlighting portions of the images that are not pixel-perfect copies (often referred to as ``diffing'').
-This is likely to have many false positive bug identifications, as small variations can easily happen, but could point out possible inaccuracies that do not appear physically incorrect but may still be a bug or unintended side effect.
+This is likely to have many false positive bug identifications as small variations can easily happen.
+However, diffing may point out possible inaccuracies that do not appear physically incorrect but may still be a bug or unintended side effect.
 Additional testing will focus on render times -- the time it takes a rendering engine to complete an image -- specifically comparing \name\ to OctaneRender \cite{octane} and its real-time ray-tracing algorithm.
 This will involve creating identical scenes and then gathering and comparing performance data for both engines.
 In most cases, since \name\ will be implementing only a subset of the effects OctaneRender uses, it should be faster.
@@ -813,7 +836,7 @@ As a counter-point, however, OctaneRender is highly optimized and thus may have 
 Code testing will use the {\it Google C++ Testing Framework} for unit testing \cite{googletest}.
 Code coverage should cover all mathematics routines at minimum, and greater than $90\%$ algorithm coverage is the goal.
 CUDA or OptiX code testing will be done with a mix of CPU-side Google Test code and custom test handlers for GPU testing.
-Unit testing for the \texttt{ncurses} interface should also be greater than $90\%$ if possible, however additional research into this area will be required, as mocking the terminal may prove to be more work than it is worth.
+Unit testing coverage for the \texttt{ncurses} interface should also be greater than $90\%$ if possible; however, additional research into this area will be required, as creating a mock-up terminal for testing may prove to be more work than it is worth.
 Lastly, test integration with Travis CI is also a goal.
 Travis CI environment tests will also be used for different terminal types if additional research determines this is possible.
 
@@ -851,9 +874,8 @@ This involves implementing the ray-to-character translation algorithm, as well a
 
 Once both the CPU ray-tracer and \texttt{ncurses} implementations are nearing completion, research will begin on OptiX/CUDA integration.
 The design and architecture of the GPU ray-tracer will take the lessons learned in the implementation of the CPU ray-tracer and use them to improve organization and understandability.
-Additionally, the GPU ray-tracer will be highly parallelized, and so extra care must be taken to avoid the problems that are involved with parallelization.
 Before the design phase for the GPU ray-tracer starts, thesis writing will commence in earnest.
-The first stages of writing will document the challenges and lessons learned from completing the CPU ray-tracer, including performance testing and evaluation; these will eventually end up in the Methods of Approach section of the thesis document.
+The first stages of writing will d323ocument the challenges and lessons learned from completing the CPU ray-tracer, including performance testing and evaluation; these will eventually end up in the Methods of Approach section of the thesis document.
 Additional research and writing for the Introduction and Related Works sections will also begin at this time.
 
 Finally, implementation of \name's actual GPU ray-tracing engine will begin in early January.
