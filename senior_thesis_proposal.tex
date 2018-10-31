@@ -3,6 +3,10 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{mathptmx}
+
+% use varepsilon
+\DeclareSymbolFont{epsilon}{OML}{ntxmi}{m}{it}
+\DeclareMathSymbol{\epsilon}{\mathord}{epsilon}{"0F}
 % \usepackage[skip=3em]{caption}
 
 \topmargin -4em
@@ -255,7 +259,7 @@ This allows each {\it character~pixel} to represent a hard gradient.
     \caption{Quadrant Elements}
     \label{fig:unicode_quadrant_characters}
   \end{subfigure}
-  \caption{Subset of \texttt{U+2580} -- \texttt{U+259F}}
+  \caption{Subset of \texttt{U+2580} -- \texttt{U+259F} \cite{unicode}}
   \label{fig:unicode_characters}
 \end{figure}
 
@@ -316,37 +320,89 @@ Following that, we will discuss two Github projects, one of which has already be
 
 \littlesection{The First Ray-Tracer}
 
-% To create an image, a ray-tracer first generates {\it eye-rays}, one for each pixel to render.
-% These rays have their origin at the camera, and a direction which causes the ray to pass through the pixel to render.
-% Each ray is then tested against all objects in the scene for intersection, and the intersection with the closest distance is chosen.
-% This was the only thing the original ray-traced shading algorithm \cite{appel1968some} did, after which the amount of illuminance incident on the point the ray hit, along with some information available from other algorithms (such as if the surface faced a light), dictated the level of darkness of that pixel.
-\todo{appel}
+The very first ray-tracing algorithm was developed by Arthur Appel in his 1968 paper {\it Some techniques for shading machine renderings of solids} \cite{appel1968some}.
+His algorithm is now known as a ray casting algorithm -- it does not follow the approach we have seen so far.
+Instead, rays are traced from a point light source to the object being shaded, and a plus symbol of varying size is rendered at that location, depending on the intensity of light at that point.
+When a photographic negative is taken, dark spots missed by the rays are now ``in shadow'', as the color levels were inverted. Today, Appel's work is not considered the first real ray-tracing algorithm, as it is almost in a different class. However, his work informed much of the following research, especially his ideas and mathematics on light intensity.
 
 \littlesection{The Breakthrough}
 
-\todo{whitted}
+The next big entry to the ray-tracing field was Turner Whitted's 1980 paper {\it An Improved Illumination Model for Shaded Display} \cite{whitted1980improved}.
+In this groundbreaking work, Whitted introduced the recursive ray-tracing algorithm we covered in Section~\ref{sec:introduction:raytracing}.
+Whitted was not the first to use ray-tracing -- Arthur Appel had first pioneered the field over a decade ago, and some commercial applications were also emerging in the field of radiosity.
+Whitted's real contribution was the idea for how to improve ray-tracing so that it could solve the problem of {\it global illumination}.
+Global illumination was not yet formalized, but the idea was to somehow gather the effect of all light in the scene on every single point.
+Recursive ray-tracing approximates this very well, and thus Whitted-style ray-tracing was born.
+Even today, any simple recursive ray-tracing algorithms (like the one proposed for \name) are known as Whitted-style ray-tracers.
 
 \littlesection{Formalization}
 
-\todo{the rendering equation}
+The path to fully photorealistic rendering was blazed soon after Whitted's paper.
+The mathematical basis for all of ray-tracing and photorealistic rendering in general was published by James Kajiya in 1986 \cite{kajiya1986rendering}.
+In his paper {\it The Rendering Equation}, he articulated a generalization for many different rendering algorithms; this generalization is shown as Equation~\ref{equation:the_rendering_equation} below.
+Although the idea behind the rendering equation was not completely new, Kajiya presented it in a form especially suited for computer graphics using vector mathematics.
+The equation also gives direction for more advanced and photorealistic rendering techniques, leading up to path-tracing.
+
+\begin{equation}
+  \label{equation:the_rendering_equation}
+  I(x, x') = g(x, x') [\epsilon(x, x') + \int_{S} \rho(x, x',x'')I(x', x'')dx'']
+\end{equation}
+
+We will not give a full explanation of the rendering equation here.
+The significant part for \name\ is the integral, since if we can approximate that, \name\ will be photorealistic.
+In \name, we will use the rendering equation to inform the recursive ray generation, attempting to find areas of the integral where most of the light is incoming.
+In the common case, all light will be from the direction of nearby light sources.
+However, we can also bias newly generated rays towards areas where refracted light may exist, such as around glass materials.
+Keeping this mathematical basis in mind as our implementation is built is critical, so that \name\ does not stray too far from photorealism.
 
 \littlesection{Accelerated Intersections}
 
-\todo{acceleration structures}
+Ray-tracing requires intersection tests with every object in the scene.
+If it were possible to drastically reduce the number of tests completed for each ray, perhaps by only testing the ray against objects in its general vicinity, massive speed gains would emerge.
+As it turns out, this was first thought of right after Whitted's original paper.
+The Bounding Volume Hierarchy (BVH) acceleration structure was proposed in Steven Rubin and Turner Whitted's 1980 paper {\it A 3-dimensional representation for fast rendering of complex scenes} \cite{rubin1980}.
+
+A BVH essentially groups objects into hierarchial organizations, with each group covering a larger area than the groups inside it.
+Each group has a ``bounding volume'', a geometric primitive that encloses all members of that group.
+Ray-tracing intersections are done with the root group first, progressing down the hierarchy and potentially skipping the vast majority of geometry in the scene, thereby speeding up computation.
+There have been numerous improvements to this idea, however BVHs continue to be an easy-to-implement and efficient acceleration structure \cite{prunier2017bvh}, and if there is development time, some form of BVH will be implemented in \name.
 
 \littlesection{Parallelization}
 
-\todo{GPU ray-tracing}
+Ray-tracing is inherently parallelizable, because each ray-tree is independent -- rays cannot collide, and one fragemenet's ray-tree does not affect another fragment's ray-tree.
+Thus, there has been many opimizations that target enhanced hardware acceleration to enable massively parrallel ray-tracing.
+The first example of this was {\it Design and Analysis of a Parallel Ray Tracing Computer}, a 1983 paper by John Cleary and others.
+In it, Cleary describes a computing system that is functionally similar to the Grapics Processing Units (GPUs) available today.
+They were even able to build small prototypes, but calculated that a full blown system would cost \$50 million and be able to generate 1000 by 1000 images in 0.15 seconds.
+Sadly, 1983 chip technology had not yet progressed to the point where such a large multi-core processor was feasable.
 
-\littlesection{TerminalImageViewer}
+However, all was not lost.
+Much of the research done in this area led to the design of systems such as OptiX \cite{parker2010optix} (which we describe in Section~\ref{sec:method:hardware}), enabling projects like \name\ to benefit from the massive speed increases estimated by early papers.
+Instead of a \$50 million monstrosity, relatively small GPU chips capable of the same performance are now available for only hundreds of dollars.
 
-\todo{}
+\littlesection{Terminal Images}
 
-\littlesection{Gaming with \texttt{termloop}}
+A small program available on Github was the original inspiration for some details of \name.
+Called TerminalImageViewer (\texttt{tiv}) \cite{tivGithub}, it uses RGB ANSI codes and Unicode block graphic characters to display images in a terminal window.
+\name\ will use the same ideas to produce its own animated output.
+Many of the example figures in this proposal were also created using \texttt{tiv}.
+The algorithm behind \texttt{tiv} is a direct inspiration for the ray-to-character algorithms described in Section~\ref{sec:method:ray_character_algorithm}.
 
-\todo{}
+\name, however, improves upon TerminalImageViewer in a single, incredibly impactful way: the graphics produced are animated.
+This does not even mention the many other differences that exist between \texttt{tiv} and \name.
+Fundamentally, \texttt{tiv} and \name\ are similar only in output format, while the purpose and internal workings are generally dissimilar.
 
-% rewrite above (use stuff on doc) and continue thread three
+\littlesection{Gaming with Termloop}
+
+A stated goal of \name\ is to support future games that use the terminal as a graphical display.
+Games have utilized the terminal as a display mechanism for a long time -- text based adventure games were built with a terminal in mind, and RPGs also got their start with randomly generated levels displayed in 2D in a terminal window.
+Termloop is a game engine built for the terminal \cite{termloop}.
+It has a similar purpose to \name\ -- namely, facilitate game creation in the terminal.
+However, Termloop, like all other terminal game engines available today, has one glaring limitation: it is not 3D.
+This one differentiating factor is huge; it means that no games can ever be made that don't fit into the strict field of two-dimensional games.
+\name\ changes that, by allowing full 3D rendering in the terminal.
+It doesn't, of course, have the other niceties such as collision detection, but the ultimate goal of \name\ -- beyond the stated goals in this proposal -- is to grow to the same level of support for 3D games that Termloop has for 2D games.
+
 
 \section{Method of Approach}
 \label{sec:method}
@@ -772,7 +828,6 @@ The final project will include at least the following scenes, but may be more ex
 
 The first two scenes are famous ray-tracing reference scenes and will be used to benchmark the performance of \name\ against other ray-tracing engines, such as OctaneRender \cite{octane} or Blender \cite{blender}.
 Figure~\ref{fig:reference_scenes} shows versions of both scenes.
-Notice that the original Whitted's sphere does not have internal glass reflections -- this was a limitation of his ray-tracing algorithm.
 
 \begin{figure}[htb]
   \centering
