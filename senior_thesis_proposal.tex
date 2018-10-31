@@ -891,19 +891,19 @@ Finally, end result testing and graphical comparisons will be conducted and docu
 % If possible, you may also suggest some areas for future research.
 
 \name\ is a complex system, the implementation and design of which will not be fully known until initial testing and research is completed in the form of the CPU ray-tracer.
-The proposed system will support real-time 3D scene viewing through a terminal emulator such as Konsole.
+The proposed system will support real-time 3D scene viewing through a terminal emulator.
 This will made possible by leveraging one of the hardware interfaces discussed in Section~\ref{sec:method:hardware} to compute ray-surface intersections in a highly parallelized manner on a GPU.
 Ray-to-character translation algorithms are also needed to transform the rendered image into Unicode characters.
-These algorithms, along with the \texttt{ncurses} library, enable \name's treatment of a terminal as an image canvas.
+These algorithms, along with the \texttt{ncurses} library, enable \name\ to treat a terminal as an image canvas.
 
-The development of \name\ will proceed at first in an experimental stage, while the abstractions and foundation for ray-tracing in general are created.
-The end result of this stage is a working CPU ray-tracer, which may or may not be capable of real-time rendering.
-The second and final stage involves rewriting the ray-tracer to utilize GPU compute power, enabling faster render times and real-time performance.
+The development of \name\ will proceed at first in an experimental stage while the abstractions and foundations for ray-tracing are created.
+The end result of this experimental stage is a working CPU ray-tracer, which may or may not be capable of real-time rendering.
+The second and final stage involves rewriting the CPU ray-tracer to utilize GPU compute power, enabling faster render times and real-time performance.
 The lessons learned from the experimental stage are crucial for a good design and implementation at this point.
-The end result of this stage is ultimate goal of \name\ -- a fully real-time capable ray-tracing engine, rendering 30 Unicode character images per second to a terminal window.
+The end result of this stage is the ultimate goal of \name: a fully real-time capable ray-tracing engine, rendering 30 Unicode character images per second to a terminal window.
 
 After the initial development period discussed in Section~\ref{sec:schedule}, all contributions to \name\ development will be welcome.
-In the pursuit of maintaining good open-source readability and ease of development, documentation will be a priority throughout the initial implementation process.
+In pursuit of maintaining good open-source readability and ease of development, documentation will be a priority throughout the initial implementation process.
 Additionally, tight integration with Github and Travis CI will ensure the integrity of public contributions.
 We hope that future projects will find \name\ inspiring and useful, whether as an engine or as a jumping-off point for real-time ray-tracing and terminal-based games.
 
